@@ -131,7 +131,7 @@
                 "table": "retailer_products"
             }
         ],
-        "group": "costco_full_control",
+        "group": "prod1",
         "offset": 10000
     },
     {
@@ -212,7 +212,7 @@
                 "table": "retailer_products"
             }
         ],
-        "group": "costco_full_control_2",
+        "group": "prod2",
         "offset": 1000
     }
 ]

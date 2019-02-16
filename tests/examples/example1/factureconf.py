@@ -35,7 +35,7 @@ def table_config():
 def data():
     return [
         {
-            'group': 'costco_full_control',
+            'group': 'prod1',
             'offset': 10000,
             'data': [
                 ['warehouses w'],
@@ -52,7 +52,7 @@ def data():
             ]
         },
         {
-            'group': 'costco_full_control_2',
+            'group': 'prod2',
             'offset': 1000,
             'data': [
                 ['warehouses w'],
