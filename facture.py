@@ -42,9 +42,9 @@ if not args.doctest:
 
 def run():
     id_seqs = {}
-    config = factureconf.table_config()
+    config = factureconf.conf_tables()
 
-    d = factureconf.data()
+    d = factureconf.conf_data()
 
     d = normalize_structure(d)
 
@@ -312,7 +312,7 @@ def point_to_alias(refstr, group_name, group_data):
 #############################################################################
 
 
-def add_table_defaults(data, my_table_config):
+def add_table_defaults(data, my_conf_tables):
     """ Update the data with lower-ranking default table data
 
     >>> d = [{'data': [{'table': 'calls'}]}]
@@ -335,7 +335,7 @@ def add_table_defaults(data, my_table_config):
         for y in x['data']:
             y['defaults'] = {}
             table = y['table']
-            table_conf = my_table_config.get(table)
+            table_conf = my_conf_tables.get(table)
             if table_conf is None:
                 raise ConfError(
                     'table "{}" has no default attrs conf'.format(table)
@@ -412,7 +412,7 @@ def formatted_single_record_lines(attrs):
 
 
 def config_for(table):
-    return factureconf.table_config()[table]
+    return factureconf.conf_tables()[table]
 
 
 id_seqs = None

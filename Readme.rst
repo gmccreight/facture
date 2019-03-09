@@ -10,6 +10,11 @@ Facture is factories that create fixtures.
 
 TODO: add more text here
 
+* "compile"-time checks
+* materializes the output of your configuration
+* code as configuration (high level of dynamic stuff possible... as long as it runs)
+* easy to reason about each scenario in isolation
+
 ----------
 How to Use
 ----------

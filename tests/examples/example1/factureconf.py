@@ -2,7 +2,7 @@
 # etc.
 
 
-def table_config():
+def conf_tables():
     default_date = '2018-01-01 00:00:00'
     return {
         'products': {
@@ -32,7 +32,7 @@ def table_config():
     }
 
 
-def data():
+def conf_data():
     return [
         {
             'group': 'prod1',
