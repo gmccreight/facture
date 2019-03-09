@@ -5,7 +5,6 @@ import copy
 import json
 import logging
 import os
-import pprint
 import sys
 
 parser = argparse.ArgumentParser()
@@ -91,6 +90,7 @@ def normalize_structure_copy_raw(data):
         x['data'] = new_data
 
     return result
+
 
 def normalize_structure_ensure_dictionaries(data):
     """This adds dictionaries to each of the 'data' list items.
@@ -373,7 +373,43 @@ def combine_all_into_result(data):
     return result
 
 
+def formatted_single_record_lines(attrs):
+    """ Format the record data
+
+    >>> attrs = {\
+        "id": 21000010000,\
+        "classified_code": "0000001234",\
+        "created_at": "2018-01-01 00:00:00",\
+        "updated_at": "2018-01-01 00:00:00"\
+    }
+    >>> formatted_single_record_lines(attrs)[0]
+    '21000010000,           -- id'
+    >>> formatted_single_record_lines(attrs)[1]
+    "'0000001234',          -- classified_code"
+    >>> formatted_single_record_lines(attrs)[2]
+    "'2018-01-01 00:00:00', -- created_at"
+    >>> formatted_single_record_lines(attrs)[3]
+    "'2018-01-01 00:00:00'  -- updated_at"
+    """
+
+    max_width = max([len(repr(i)) for i in attrs.values()])
+
+    results = []
+    for i in enumerate(attrs.items()):
+        index = i[0]
+        value = i[1][1]
+        key = i[1][0]
+        value_str = "{}".format(repr(value))
+        comma_or_space = ' '
+        if index < len(attrs.items()) - 1:
+            comma_or_space = ','
+        num_spaces_to_add = max_width - len(value_str)
+        space_after = ' ' * num_spaces_to_add
+        results += [value_str + comma_or_space + space_after + ' -- ' + key]
+    return results
+
 #############################################################################
+
 
 def config_for(table):
     return factureconf.table_config()[table]
