@@ -2,6 +2,10 @@
 # etc.
 
 
+def conf_targets():
+    return []
+
+
 def conf_tables():
     default_date = '2018-01-01 00:00:00'
     return {

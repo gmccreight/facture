@@ -1,6 +1,18 @@
+def conf_targets():
+    return [
+        {
+            'name': 'products',
+            'type': 'section_in_file',
+            'filename': 'original.sql',
+            'section_name': 'products'
+        }
+    ]
+
+
 def conf_tables():
     return {
         'products': {
+            'target': 'products',
             'start_id': 10,
             'attrs': {
                 'name': {'default': 'default name'},

@@ -14,6 +14,7 @@ TODO: add more text here
 * materializes the output of your configuration
 * code as configuration (high level of dynamic stuff possible... as long as it runs)
 * easy to reason about each scenario in isolation
+* plays well with others.  Integrates with how you do things, doesn't try to take over completely.
 
 ----------
 How to Use
