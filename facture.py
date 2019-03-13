@@ -29,6 +29,10 @@ def debug(m):
     logging.debug(m)
 
 
+def se(m):
+    sys.stderr.write(str(m))
+
+
 if not args.doctest:
     if args.conf_dir:
         if not os.path.isdir(args.conf_dir):
@@ -407,6 +411,73 @@ def formatted_single_record_lines(attrs):
         num_spaces_to_add = max_width - len(value_str)
         space_after = ' ' * num_spaces_to_add
         results += [value_str + comma_or_space + space_after + ' -- ' + key]
+    return results
+
+
+def validate_facture_json_data(data):
+    """
+    >>> file_data = '''
+    ... -- facture_json: {"target_name": "products", "position": "start"}
+    ... some stuff
+    ... -- facture_json: {"target_name": "products", "position": "end"}
+    ... '''
+    >>> data = get_facture_json_data_from_file('foo.sql', file_data)
+    >>> validate_facture_json_data(data)
+
+    >>> file_data = '''
+    ... -- facture_json: {"target_name": "items", "position": "start"}
+    ... some stuff
+    ... -- facture_json: {"target_name": "items", "position": "start"}
+    ... '''
+    >>> data = get_facture_json_data_from_file('foo.sql', file_data)
+    >>> validate_facture_json_data(data)
+    Traceback (most recent call last):
+    ConfError: file 'foo.sql' starts target 'items' but does not end it
+    """
+
+    target_names_for_file = {}
+    for d in data:
+        target_names_for_file[d['filename']] = {}
+
+    for d in data:
+        if d['data']['position'] == 'start':
+            target_names_for_file[d['filename']][d['data']['target_name']] = True
+
+    for d in data:
+        if d['data']['position'] == 'end':
+            target_names_for_file[d['filename']][d['data']['target_name']] = False
+
+    for filename in target_names_for_file:
+        data = target_names_for_file[filename]
+        for target_name in data:
+            if data[target_name]:
+                raise ConfError(
+                    "file '{}' starts target '{}' but does not end it".format(filename, target_name)
+                )
+
+
+def get_facture_json_data_from_file(filename, file_data):
+    """
+    >>> file_data = '''
+    ... -- facture_json: {"target_name": "products", "position": "start"}
+    ... some stuff
+    ... -- facture_json: {"target_name": "products", "position": "end"}
+    ... '''
+    >>> res = get_facture_json_data_from_file('foo.sql', file_data)
+    >>> len(res)
+    2
+    >>> res[0]['data']['position']
+    'start'
+    >>> res[1]['data']['position']
+    'end'
+    """
+
+    results = []
+    for index, line in enumerate(file_data.splitlines()):
+        linenum = index + 1
+        data = parse_facture_json_line(line, filename, linenum)
+        if data:
+            results.append({'filename': filename, 'linenum': linenum, 'data': data})
     return results
 
 
