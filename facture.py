@@ -413,6 +413,9 @@ def formatted_single_record_lines(attrs):
 def parse_facture_json_line(line, filename, linenum):
     """ Parse the JSON in the facture_json line
 
+    >>> l = 'just a normal line'
+    >>> parse_facture_json_line(l, './foo', 12)
+
     >>> l = '-- facture_json: {"target_name": "products", "position": "end"}'
     >>> parse_facture_json_line(l, './foo', 12)['target_name']
     'products'
@@ -434,6 +437,8 @@ def parse_facture_json_line(line, filename, linenum):
                 "facture_json on line {} in '{}' is not valid JSON".format(linenum, filename)
             ) from e
         return result
+    else:
+        return None
 
 
 #############################################################################
