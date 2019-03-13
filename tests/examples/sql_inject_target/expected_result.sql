@@ -1,6 +1,6 @@
 -- Here is some commentary before that should remain preserved.
 
--- facture_inline_json: {'target_name': 'products', 'position': 'start'}
+-- facture_json: {"target_name": "products", "position": "start"}
 insert into products
 (
   id,
@@ -15,6 +15,6 @@ values
    210,           -- id
    'better name'  -- name
  ),
--- facture_inline_json: {'target_name': 'products', 'position': 'end'}
+-- facture_json: {"target_name": "products", "position": "end"}
 
 -- Here is some commentary after that should remain preserved.

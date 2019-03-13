@@ -5,6 +5,7 @@ import copy
 import json
 import logging
 import os
+import re
 import sys
 
 parser = argparse.ArgumentParser()
@@ -407,6 +408,33 @@ def formatted_single_record_lines(attrs):
         space_after = ' ' * num_spaces_to_add
         results += [value_str + comma_or_space + space_after + ' -- ' + key]
     return results
+
+
+def parse_facture_json_line(line, filename, linenum):
+    """ Parse the JSON in the facture_json line
+
+    >>> l = '-- facture_json: {"target_name": "products", "position": "end"}'
+    >>> parse_facture_json_line(l, './foo', 12)['target_name']
+    'products'
+
+    >>> l = '-- facture_json: {whoops": "end"}'
+    >>> parse_facture_json_line(l, './foo.sql', 34)
+    Traceback (most recent call last):
+    ConfError: facture_json on line 34 in './foo.sql' is not valid JSON
+    """
+
+    m = re.match(r'.*facture_json: (.*)', line)
+    if m:
+        json_text = m[1]
+        result = None
+        try:
+            result = json.loads(json_text)
+        except json.decoder.JSONDecodeError as e:
+            raise ConfError(
+                "facture_json on line {} in '{}' is not valid JSON".format(linenum, filename)
+            ) from e
+        return result
+
 
 #############################################################################
 
