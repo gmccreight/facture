@@ -432,27 +432,62 @@ def validate_facture_json_data(data):
     >>> data = get_facture_json_data_from_file('foo.sql', file_data)
     >>> validate_facture_json_data(data)
     Traceback (most recent call last):
+    ConfError: file 'foo.sql' starts target 'items' more than once
+
+    >>> file_data = '''
+    ... -- facture_json: {"target_name": "items", "position": "start"}
+    ... some stuff
+    ... '''
+    >>> data = get_facture_json_data_from_file('foo.sql', file_data)
+    >>> validate_facture_json_data(data)
+    Traceback (most recent call last):
     ConfError: file 'foo.sql' starts target 'items' but does not end it
+
+    >>> file_data = '''
+    ... -- facture_json: {"target_name": "items", "position": "end"}
+    ... some stuff
+    ... '''
+    >>> data = get_facture_json_data_from_file('foo.sql', file_data)
+    >>> validate_facture_json_data(data)
+    Traceback (most recent call last):
+    ConfError: file 'foo.sql' ends target 'items' but does not start it
     """
 
     target_names_for_file = {}
+
     for d in data:
         target_names_for_file[d['filename']] = {}
 
     for d in data:
         if d['data']['position'] == 'start':
-            target_names_for_file[d['filename']][d['data']['target_name']] = True
+            if not target_names_for_file[d['filename']].get(d['data']['target_name']):
+                target_names_for_file[d['filename']][d['data']['target_name']] = 0
+            target_names_for_file[d['filename']][d['data']['target_name']] += 1
+
+    for filename in target_names_for_file:
+        d = target_names_for_file[filename]
+        for target_name in d:
+            if d[target_name] > 1:
+                raise ConfError(
+                    "file '{}' starts target '{}' more than once".format(filename, target_name)
+                )
 
     for d in data:
         if d['data']['position'] == 'end':
-            target_names_for_file[d['filename']][d['data']['target_name']] = False
+            if not target_names_for_file[d['filename']].get(d['data']['target_name']):
+                target_names_for_file[d['filename']][d['data']['target_name']] = 0
+            target_names_for_file[d['filename']][d['data']['target_name']] -= 1
 
     for filename in target_names_for_file:
         data = target_names_for_file[filename]
         for target_name in data:
-            if data[target_name]:
+            if data[target_name] > 0:
                 raise ConfError(
                     "file '{}' starts target '{}' but does not end it".format(filename, target_name)
+                )
+            elif data[target_name] < 0:
+                raise ConfError(
+                    "file '{}' ends target '{}' but does not start it".format(filename, target_name)
                 )
 
 
