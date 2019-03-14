@@ -48,7 +48,7 @@ if not args.doctest:
 
 def run():
     id_seqs = {}
-    config = factureconf.conf_tables()
+    conf_tables = factureconf.conf_tables()
 
     d = factureconf.conf_data()
 
@@ -56,9 +56,9 @@ def run():
 
     consistency_checks_or_immediately_die(d)
 
-    d = enhance_with_generated_data(d, id_seqs, config)
+    d = enhance_with_generated_data(d, id_seqs, conf_tables)
 
-    d = add_table_defaults(d, config)
+    d = add_table_defaults(d, conf_tables)
 
     d = combine_all_into_result(d)
 
@@ -66,7 +66,11 @@ def run():
         print(json.dumps(d, indent=4, sort_keys=True, default=str))
 
     if not args.skip_targets:
+
         targets = factureconf.conf_targets()
+
+        d = add_target_info(d, conf_tables, targets)
+
         if len(targets) < 1:
             raise ConfError(
                 "You have no targets specified in the conf_targets function."
@@ -429,6 +433,56 @@ def combine_all_into_result(data):
             z = careful_merge_dicts(z, y['generated'])
             y['combined'] = z
     return result
+
+
+def add_target_info(data, tables, targets):
+    """
+    >>> d = [{'data': [{'table': 'products'}]}]
+    >>> tables = {'products': {'target': 'products'}}
+    >>> targets = [{ 'name': 'products', 'type': 'foo' }]
+
+    >>> add_target_info(d, tables, targets)
+    [{'data': [{'table': 'products', 'target': {'name': 'products', 'type': 'foo'}}]}]
+
+
+    >>> d = [{'data': [{'table': 'products'}]}]
+    >>> tables = {'products': {'start_id': 1000}}
+    >>> targets = [{ 'name': 'products', 'type': 'foo' }]
+
+    >>> add_target_info(d, tables, targets)
+    [{'data': [{'table': 'products', 'target': None}]}]
+
+
+    >>> d = [{'data': [{'table': 'products'}]}]
+    >>> tables = {'products': {'target': 'products'}}
+    >>> targets = [{ 'name': 'typo_products', 'type': 'foo' }]
+
+    >>> add_target_info(d, tables, targets)
+    Traceback (most recent call last):
+    ConfError: target 'products' from table 'products' does not exist
+    """
+    result = copy.deepcopy(data)
+    for x in result:
+        for y in x['data']:
+            table = y['table']
+            target_name = tables[table].get('target')
+
+            if target_name:
+                target = None
+                for i in targets:
+                    if i['name'] == target_name:
+                        target = i
+                if target is None:
+                    raise ConfError(
+                        "target '{}' from table '{}' does not exist".format(target_name, table)
+                    )
+
+                y['target'] = copy.deepcopy(target)
+            else:
+                y['target'] = None
+    return result
+
+#############################################################################
 
 
 def formatted_single_record_lines(attrs):
