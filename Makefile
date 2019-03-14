@@ -11,7 +11,7 @@ test: clean-test-output
 
 	cp tests/examples/sql_inject_target/original.sql test_output/sql_inject_target/result.sql
 	./facture.py --conf-dir="tests/examples/sql_inject_target"
-	# diff tests/examples/sql_inject_target/expected_result.sql test_output/sql_inject_target/result.sql && echo OK
+	diff tests/examples/sql_inject_target/expected_result.sql test_output/sql_inject_target/result.sql && echo OK
 
 clean-test-output:
 	rm -rf test_output

@@ -73,6 +73,50 @@ def run():
                 " Use --skip-targets if that is intentional."
             )
 
+        for target in targets:
+            filename = target['filename']
+            with open(filename, 'r') as f:
+
+                data = get_facture_json_data_from_file(filename, f.read())
+
+                start_line = None
+                end_line = None
+
+                for datum in data:
+                    opts = datum['data']
+                    if opts['target_name'] == target['name'] and opts['position'] == 'start':
+                        start_line = datum['linenum']
+
+                for datum in data:
+                    if opts['target_name'] == target['name'] and opts['position'] == 'end':
+                        end_line = datum['linenum']
+
+                if not start_line:
+                    raise ConfError(
+                        "could not find a start for target {}".format(target['name'])
+                    )
+
+                if not end_line:
+                    raise ConfError(
+                        "could not find an end for target {}".format(target['name'])
+                    )
+
+                f.seek(0)
+
+                result = []
+                for index, line in enumerate(f):
+                    linenum = index + 1
+                    if linenum <= start_line:
+                        result.append(line)
+                    if linenum == start_line + 1:
+                        result.append("hello there\n")
+                    if linenum >= end_line:
+                        result.append(line)
+
+                with open(filename, 'w') as f2:
+                    f2.write("".join(result))
+
+
 #############################################################################
 
 

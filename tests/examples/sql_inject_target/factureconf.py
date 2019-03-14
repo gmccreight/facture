@@ -3,7 +3,7 @@ def conf_targets():
         {
             'name': 'products',
             'type': 'section_in_file',
-            'filename': 'original.sql',
+            'filename': 'test_output/sql_inject_target/result.sql',
             'section_name': 'products'
         }
     ]
