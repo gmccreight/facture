@@ -13,6 +13,7 @@ parser.add_argument('-v', action="count", default=0)
 parser.add_argument('--doctest', action="store_true")
 parser.add_argument('--conf-dir', type=str)
 parser.add_argument('--output-type', type=str, choices=['json', 'sql'])
+parser.add_argument('--skip-targets', action="store_true")
 args = parser.parse_args()
 
 if args.v >= 2:
@@ -63,6 +64,14 @@ def run():
 
     if args.output_type and args.output_type == 'json':
         print(json.dumps(d, indent=4, sort_keys=True, default=str))
+
+    if not args.skip_targets:
+        targets = factureconf.conf_targets()
+        if len(targets) < 1:
+            raise ConfError(
+                "You have no targets specified in the conf_targets function."
+                " Use --skip-targets if that is intentional."
+            )
 
 #############################################################################
 
