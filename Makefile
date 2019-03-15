@@ -10,6 +10,7 @@ test: clean-test-output
 	diff tests/examples/json_output/expected_output.json test_output/json_output/output.json && echo OK
 
 	cp tests/examples/sql_inject_target/original.sql test_output/sql_inject_target/result.sql
+	./facture.py --conf-dir="tests/examples/sql_inject_target" --skip-targets --output-type=json > test_output/sql_inject_target/debug_intermediate.json
 	./facture.py --conf-dir="tests/examples/sql_inject_target"
 	diff tests/examples/sql_inject_target/expected_result.sql test_output/sql_inject_target/result.sql && echo OK
 

@@ -62,14 +62,15 @@ def run():
 
     d = combine_all_into_result(d)
 
+    targets = factureconf.conf_targets()
+    targets = annotate_targets_with_positional_data_from_file(targets)
+
+    d = add_target_info(d, conf_tables, targets)
+
     if args.output_type and args.output_type == 'json':
         print(json.dumps(d, indent=4, sort_keys=True, default=str))
 
     if not args.skip_targets:
-
-        targets = factureconf.conf_targets()
-
-        d = add_target_info(d, conf_tables, targets)
 
         if len(targets) < 1:
             raise ConfError(
@@ -520,6 +521,42 @@ def formatted_single_record_lines(attrs):
         results += [value_str + comma_or_space + space_after + ' -- ' + key]
     return results
 
+#############################################################################
+
+
+def annotate_targets_with_positional_data_from_file(targets):
+    targets = copy.deepcopy(targets)
+    for target in targets:
+        filename = target['filename']
+
+        data = []
+        with open(filename, 'r') as f:
+            data = get_facture_json_data_from_file(filename, f.read())
+
+        start_line = None
+        end_line = None
+
+        for datum in data:
+            opts = datum['data']
+            if opts['target_name'] == target['name'] and opts['position'] == 'start':
+                start_line = datum['linenum']
+
+        for datum in data:
+            if opts['target_name'] == target['name'] and opts['position'] == 'end':
+                end_line = datum['linenum']
+
+        if not start_line:
+            raise ConfError(
+                "could not find a start for target {}".format(target['name'])
+            )
+
+        if not end_line:
+            raise ConfError(
+                "could not find an end for target {}".format(target['name'])
+            )
+
+        target['positional_data_from_file'] = {'start_line': start_line, 'end_line': end_line}
+    return targets
 
 def validate_facture_json_data(data):
     """

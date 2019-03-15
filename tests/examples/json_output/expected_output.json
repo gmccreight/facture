@@ -20,7 +20,8 @@
                     "tablestr": "warehouses w"
                 },
                 "referenced": {},
-                "table": "warehouses"
+                "table": "warehouses",
+                "target": null
             },
             {
                 "alias": "p1",
@@ -43,7 +44,8 @@
                     "tablestr": "products p1"
                 },
                 "referenced": {},
-                "table": "products"
+                "table": "products",
+                "target": null
             },
             {
                 "alias": "p2",
@@ -66,7 +68,8 @@
                     "tablestr": "products p2"
                 },
                 "referenced": {},
-                "table": "products"
+                "table": "products",
+                "target": null
             },
             {
                 "alias": "rp1",
@@ -97,7 +100,8 @@
                     "product_id": 21000010000,
                     "retailer_id": 23000010000
                 },
-                "table": "retailer_products"
+                "table": "retailer_products",
+                "target": null
             },
             {
                 "alias": "rp2",
@@ -128,7 +132,8 @@
                     "product_id": 21000010001,
                     "retailer_id": 23000010000
                 },
-                "table": "retailer_products"
+                "table": "retailer_products",
+                "target": null
             }
         ],
         "group": "prod1",
@@ -155,7 +160,8 @@
                     "tablestr": "warehouses w"
                 },
                 "referenced": {},
-                "table": "warehouses"
+                "table": "warehouses",
+                "target": null
             },
             {
                 "alias": "p",
@@ -178,7 +184,8 @@
                     "tablestr": "products p"
                 },
                 "referenced": {},
-                "table": "products"
+                "table": "products",
+                "target": null
             },
             {
                 "alias": "rp",
@@ -209,7 +216,8 @@
                     "product_id": 21000001000,
                     "retailer_id": 23000001000
                 },
-                "table": "retailer_products"
+                "table": "retailer_products",
+                "target": null
             }
         ],
         "group": "prod2",
