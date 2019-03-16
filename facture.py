@@ -62,6 +62,8 @@ def run():
 
     d = combine_all_into_result(d)
 
+    d = add_sql_output(d)
+
     targets = factureconf.conf_targets()
     targets = annotate_targets_with_positional_data_from_file(targets)
 
@@ -486,7 +488,26 @@ def add_target_info(data, tables, targets):
 #############################################################################
 
 
-def formatted_single_record_lines(attrs):
+def add_sql_output(data, indent=2):
+    result = copy.deepcopy(data)
+    for x in result:
+        group = x['group']
+        for y in x['data']:
+            sql = sql_output_lines_for(group, y['combined'], indent)
+            y['output_sql'] = sql
+    return result
+
+
+def sql_output_lines_for(group, attrs, indent=2):
+    lines = []
+    lines.append("-- facture_group_{}".format(group))
+    lines.append("(")
+    lines.extend(formatted_single_record_lines(attrs, indent))
+    lines.append(")")
+    return '\n'.join(lines)
+
+
+def formatted_single_record_lines(attrs, indent):
     """ Format the record data
 
     >>> attrs = {\
@@ -495,14 +516,17 @@ def formatted_single_record_lines(attrs):
         "created_at": "2018-01-01 00:00:00",\
         "updated_at": "2018-01-01 00:00:00"\
     }
-    >>> formatted_single_record_lines(attrs)[0]
+    >>> formatted_single_record_lines(attrs, 0)[0]
     '21000010000,           -- id'
-    >>> formatted_single_record_lines(attrs)[1]
+    >>> formatted_single_record_lines(attrs, 0)[1]
     "'0000001234',          -- classified_code"
-    >>> formatted_single_record_lines(attrs)[2]
+    >>> formatted_single_record_lines(attrs, 0)[2]
     "'2018-01-01 00:00:00', -- created_at"
-    >>> formatted_single_record_lines(attrs)[3]
+    >>> formatted_single_record_lines(attrs, 0)[3]
     "'2018-01-01 00:00:00'  -- updated_at"
+
+    >>> formatted_single_record_lines(attrs, 2)[0]
+    '  21000010000,           -- id'
     """
 
     max_width = max([len(repr(i)) for i in attrs.values()])
@@ -512,13 +536,14 @@ def formatted_single_record_lines(attrs):
         index = i[0]
         value = i[1][1]
         key = i[1][0]
+        indent_str = ' ' * indent
         value_str = "{}".format(repr(value))
         comma_or_space = ' '
         if index < len(attrs.items()) - 1:
             comma_or_space = ','
         num_spaces_to_add = max_width - len(value_str)
         space_after = ' ' * num_spaces_to_add
-        results += [value_str + comma_or_space + space_after + ' -- ' + key]
+        results += [indent_str + value_str + comma_or_space + space_after + ' -- ' + key]
     return results
 
 #############################################################################

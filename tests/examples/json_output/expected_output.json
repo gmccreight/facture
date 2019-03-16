@@ -15,6 +15,7 @@
                 "generated": {
                     "id": 23000010000
                 },
+                "output_sql": "-- facture_group_prod1\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000010000            -- id\n)",
                 "raw": {
                     "attrs": null,
                     "tablestr": "warehouses w"
@@ -39,6 +40,7 @@
                 "generated": {
                     "id": 21000010000
                 },
+                "output_sql": "-- facture_group_prod1\n(\n  '0000001234',          -- classified_code\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  21000010000            -- id\n)",
                 "raw": {
                     "attrs": null,
                     "tablestr": "products p1"
@@ -63,6 +65,7 @@
                 "generated": {
                     "id": 21000010001
                 },
+                "output_sql": "-- facture_group_prod1\n(\n  '0000001234',          -- classified_code\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  21000010001            -- id\n)",
                 "raw": {
                     "attrs": null,
                     "tablestr": "products p2"
@@ -89,6 +92,7 @@
                 "generated": {
                     "id": 22000010000
                 },
+                "output_sql": "-- facture_group_prod1\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000010000,           -- retailer_id\n  21000010000,           -- product_id\n  22000010000            -- id\n)",
                 "raw": {
                     "attrs": {
                         "product_id": ".p1.id",
@@ -121,6 +125,7 @@
                 "generated": {
                     "id": 22000010001
                 },
+                "output_sql": "-- facture_group_prod1\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000010000,           -- retailer_id\n  21000010001,           -- product_id\n  22000010001            -- id\n)",
                 "raw": {
                     "attrs": {
                         "product_id": ".p2.id",
@@ -155,6 +160,7 @@
                 "generated": {
                     "id": 23000001000
                 },
+                "output_sql": "-- facture_group_prod2\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000001000            -- id\n)",
                 "raw": {
                     "attrs": null,
                     "tablestr": "warehouses w"
@@ -179,6 +185,7 @@
                 "generated": {
                     "id": 21000001000
                 },
+                "output_sql": "-- facture_group_prod2\n(\n  '0000001234',          -- classified_code\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  21000001000            -- id\n)",
                 "raw": {
                     "attrs": null,
                     "tablestr": "products p"
@@ -205,6 +212,7 @@
                 "generated": {
                     "id": 22000001000
                 },
+                "output_sql": "-- facture_group_prod2\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000001000,           -- retailer_id\n  21000001000,           -- product_id\n  22000001000            -- id\n)",
                 "raw": {
                     "attrs": {
                         "product_id": ".p.id",
