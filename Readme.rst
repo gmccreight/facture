@@ -6,12 +6,15 @@ Facture
 Overview
 --------
 
-Facture is factories that create fixtures.
+Facture is FAC-tories that create fix-TURE data.  Also, it manu-FACTURE-s data.
 
-TODO: add more text here
+Wiktionary says it also means: "The act or manner of making or doing anything,
+especially of a literary, musical, or pictorial production."  That's pretty cool.
+
+So why, oh why, would you need such a strange tool?
 
 * "compile"-time checks
-* materializes the output of your configuration
+* materializes the output into your version-controlled files, unrolling the complexity.  Because this is automated, we can put as much effort into making the generated data comprehensible (and lineage-providing) as possible.  It's also extremely easy to see what the effects of any change you make is, since it's all laid out for you.
 * code as configuration (high level of dynamic stuff possible... as long as it runs)
 * easy to reason about each scenario in isolation: data partitioning
 * plays well with others... strangles manually created fixtures.  Integrates with how you do things, doesn't try to
@@ -28,6 +31,10 @@ Go to the ``tests/examples/sql_inject_target`` directory.  Copy the
 at the ``facture_json`` target section in the ``original.sql`` file into a file
 of your own choosing.  Update the ``conf_targets`` section of your
 ``factureconf.py`` file to point to the file where you put the ``facture_json``.
+
+Please consider keeping the boilerplate at the top of the configuration file.
+It will help people who have never come across facture before to orient
+themselves quickly.
 
 Run::
 
@@ -72,7 +79,18 @@ Approach
 
 This is my favorite section of every project.  It's where I reflect on the
 approach I have taken, how I feel about it, and compare and contrast with
-approaches I've taken in the past.
+approaches I've taken in the past, in an attempt to always be improving.  It
+reads a bit like a blog post.  Yes, it's a bit navel-gazing.  No, I'm not going
+to remove it, because I think it's critically important, at least for me.  Feel
+free to skip it.  It's at the bottom for a reason.
+
+One thing I've discovered about myself over the past several years is that I
+really dislike being confused, particularly when it's entirely avoidable.
+
+I think we owe it to others to put in the effort to polish our creations to
+overcome the user's cognitive burden as much as possible.  This article on
+research debt really struck a chord with me:
+https://distill.pub/2017/research-debt/
 
 No nil checks.  Structural normalization and validation as soon as possible, then confident code after that.
 
@@ -80,6 +98,10 @@ Annotation - build up an evermore complete data structure over time
 
 All on one page - the single document answers all questions
 
+In the example configuration files, boilerplate that explains what the tool is
+and how to get it and use it.  Thinking about all the .rc files that I have
+come across in the past and wondered "what is this file, what is it for, how do
+I use it, etc"
 
 
 -------------------
