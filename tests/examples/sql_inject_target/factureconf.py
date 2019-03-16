@@ -24,14 +24,14 @@ def conf_tables():
 def conf_data():
     return [
         {
-            'group': 'testgroup1',
+            'group': 'facture_group_testgroup1',
             'offset': 100,
             'data': [
                 ['products p'],
             ]
         },
         {
-            'group': 'testgroup2',
+            'group': 'facture_group_testgroup2',
             'offset': 200,
             'data': [
                 [

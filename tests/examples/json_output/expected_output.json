@@ -141,7 +141,7 @@
                 "target": null
             }
         ],
-        "group": "prod1",
+        "group": "facture_group_prod1",
         "offset": 10000
     },
     {
@@ -228,7 +228,7 @@
                 "target": null
             }
         ],
-        "group": "prod2",
+        "group": "facture_group_prod2",
         "offset": 1000
     }
 ]

@@ -14,6 +14,7 @@ parser.add_argument('--doctest', action="store_true")
 parser.add_argument('--conf-dir', type=str)
 parser.add_argument('--output-type', type=str, choices=['json', 'sql'])
 parser.add_argument('--skip-targets', action="store_true")
+parser.add_argument('--flexible-group-names', action="store_true")
 args = parser.parse_args()
 
 if args.v >= 2:
@@ -66,7 +67,6 @@ def run():
 
     targets = factureconf.conf_targets()
     targets = annotate_targets_with_positional_data_from_file(targets)
-
     d = add_target_info(d, conf_tables, targets)
 
     if args.output_type and args.output_type == 'json':
@@ -80,48 +80,30 @@ def run():
                 " Use --skip-targets if that is intentional."
             )
 
+        targets = annotate_targets_with_output_values(targets, d)
+
         for target in targets:
+            payload = "\n" + ",\n\n".join(target['output_values']) + "\n\n"
             filename = target['filename']
-            with open(filename, 'r') as f:
+            start = target['positional_data_from_file']['start_line']
+            end = target['positional_data_from_file']['end_line']
+            insert_string_into_file_between_lines(payload, filename, start, end)
 
-                data = get_facture_json_data_from_file(filename, f.read())
 
-                start_line = None
-                end_line = None
+def insert_string_into_file_between_lines(string, filename, start, end):
+    result = []
+    with open(filename, 'r') as f:
+        for index, line in enumerate(f):
+            linenum = index + 1
+            if linenum <= start:
+                result.append(line)
+            if linenum == start + 1:
+                result.append(string)
+            if linenum >= end:
+                result.append(line)
 
-                for datum in data:
-                    opts = datum['data']
-                    if opts['target_name'] == target['name'] and opts['position'] == 'start':
-                        start_line = datum['linenum']
-
-                for datum in data:
-                    if opts['target_name'] == target['name'] and opts['position'] == 'end':
-                        end_line = datum['linenum']
-
-                if not start_line:
-                    raise ConfError(
-                        "could not find a start for target {}".format(target['name'])
-                    )
-
-                if not end_line:
-                    raise ConfError(
-                        "could not find an end for target {}".format(target['name'])
-                    )
-
-                f.seek(0)
-
-                result = []
-                for index, line in enumerate(f):
-                    linenum = index + 1
-                    if linenum <= start_line:
-                        result.append(line)
-                    if linenum == start_line + 1:
-                        result.append("hello there\n")
-                    if linenum >= end_line:
-                        result.append(line)
-
-                with open(filename, 'w') as f2:
-                    f2.write("".join(result))
+    with open(filename, 'w') as f:
+        f.write("".join(result))
 
 
 #############################################################################
@@ -199,6 +181,7 @@ def normalize_structure_ensure_dictionaries(data):
 def consistency_checks_or_immediately_die(data):
     consistency_check_offset(data)
     consistency_check_no_same_aliases(data)
+    consistency_check_no_incorrectly_named_groups(data)
     consistency_check_no_same_groups(data)
 
 
@@ -223,6 +206,18 @@ def consistency_check_offset(data):
 
 def consistency_check_no_same_aliases(data):
     # TODO
+    return True
+
+
+def consistency_check_no_incorrectly_named_groups(data):
+    if args.flexible_group_names:
+        return True
+    for x in data:
+        if not re.match(r'facture_group_', x['group']):
+            raise ConfError(
+                'Please name groups starting with "facture_group_" or pass --flexible-group-names.'
+                ' Having these longer group names allows for easy greping back to the config.'
+            )
     return True
 
 
@@ -500,7 +495,7 @@ def add_sql_output(data, indent=2):
 
 def sql_output_lines_for(group, attrs, indent=2):
     lines = []
-    lines.append("-- facture_group_{}".format(group))
+    lines.append("-- {}".format(group))
     lines.append("(")
     lines.extend(formatted_single_record_lines(attrs, indent))
     lines.append(")")
@@ -547,6 +542,27 @@ def formatted_single_record_lines(attrs, indent):
     return results
 
 #############################################################################
+
+
+def annotate_targets_with_output_values(targets, data):
+    targets = copy.deepcopy(targets)
+
+    for target in targets:
+        target['output_values'] = []
+
+    for x in data:
+        for y in x['data']:
+            target = target_with_name(targets, y['target']['name'])
+            target['output_values'].append(y['output_sql'])
+
+    return targets
+
+
+def target_with_name(targets, name):
+    for i in targets:
+        if i['name'] == name:
+            return i
+    return None
 
 
 def annotate_targets_with_positional_data_from_file(targets):

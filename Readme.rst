@@ -47,6 +47,18 @@ inject generated SQL statements.
 when in target-injection output mode --empty-targets-ok allows no targets to be
 specified, or for some of the targets to not be filled in.
 
+--------
+Approach
+--------
+
+No nil checks.  Structural normalization and validation as soon as possible, then confident code after that.
+
+Annotation - build up an evermore complete data structure over time
+
+All on one page - the single document answers all questions
+
+
+
 -------------------
 TODO before release
 -------------------

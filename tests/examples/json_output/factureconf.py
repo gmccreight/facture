@@ -39,7 +39,7 @@ def conf_tables():
 def conf_data():
     return [
         {
-            'group': 'prod1',
+            'group': 'facture_group_prod1',
             'offset': 10000,
             'data': [
                 ['warehouses w'],
@@ -56,7 +56,7 @@ def conf_data():
             ]
         },
         {
-            'group': 'prod2',
+            'group': 'facture_group_prod2',
             'offset': 1000,
             'data': [
                 ['warehouses w'],

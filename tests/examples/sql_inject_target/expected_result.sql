@@ -1,8 +1,28 @@
--- Here is some commentary before that should remain preserved.
-
+insert into products (
+  name,
+  id
+)
+values
 -- facture_json: {"target_name": "products", "position": "start"}
-hello there
+
+-- facture_group_testgroup1
+(
+  'default name', -- name
+  110             -- id
+),
+
+-- facture_group_testgroup2
+(
+  'better name', -- name
+  210            -- id
+)
+
 -- facture_json: {"target_name": "products", "position": "end"}
+;
 
--- Here is some commentary after that should remain preserved.
-
+insert into places (
+  name
+)
+values
+('San Francisco')
+;

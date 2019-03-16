@@ -1,8 +1,16 @@
--- Here is some commentary before that should remain preserved.
-
+insert into products (
+  name,
+  id
+)
+values
 -- facture_json: {"target_name": "products", "position": "start"}
-select 'this should be replaced by the calculated products value' as message;
+-- THIS WILL BE REPLACED
 -- facture_json: {"target_name": "products", "position": "end"}
+;
 
--- Here is some commentary after that should remain preserved.
-
+insert into places (
+  name
+)
+values
+('San Francisco')
+;
