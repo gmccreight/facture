@@ -13,43 +13,66 @@ TODO: add more text here
 * "compile"-time checks
 * materializes the output of your configuration
 * code as configuration (high level of dynamic stuff possible... as long as it runs)
-* easy to reason about each scenario in isolation
-* plays well with others.  Integrates with how you do things, doesn't try to
+* easy to reason about each scenario in isolation: data partitioning
+* plays well with others... strangles manually created fixtures.  Integrates with how you do things, doesn't try to
   take over completely.  Can target files or sections within files.
 
 ----------
 How to Use
 ----------
 
-Create a ``factureconf.py`` file like any of the ones in the examples directory.
+Create a ``factureconf.py`` file like any of the ones in the
+
+Go to the ``tests/examples/sql_inject_target`` directory.  Copy the
+``factureconf.py`` to the directory you will be running ``facture`` in.  Look
+at the ``facture_json`` target section in the ``original.sql`` file into a file
+of your own choosing.  Update the ``conf_targets`` section of your
+``factureconf.py`` file to point to the file where you put the ``facture_json``.
 
 Run::
 
-    ./facture.py --conf-dir="the dir with your conf" --output-type=json
+    facture
+
+That section in your target file should now be filled in with some data.
+You're off to the races!
 
 -------------------
 How it works
 -------------------
 
-Two phases.  First, a validation phase, then a change phase.
+The steps in the process are:
 
-Couple of different outputs:
+* sequence creation
+* data joins
+* formatting
+* output to targets
 
---output-type=json
+=================
+Sequence Creation
+=================
 
-See the generated data
+=================
+Data Joins
+=================
 
---output-type=target-injection (the default)
+=================
+Formatting
+=================
 
-For the targets specified in the factureconf.py conf_targets() method,
-inject generated SQL statements.
+=================
+Output to Targets
+=================
 
-when in target-injection output mode --empty-targets-ok allows no targets to be
-specified, or for some of the targets to not be filled in.
+Unless you specify ``--skip-targets``, facture will verify that you have added
+at least a single target, and will output into that target.
 
 --------
 Approach
 --------
+
+This is my favorite section of every project.  It's where I reflect on the
+approach I have taken, how I feel about it, and compare and contrast with
+approaches I've taken in the past.
 
 No nil checks.  Structural normalization and validation as soon as possible, then confident code after that.
 
@@ -63,10 +86,6 @@ All on one page - the single document answers all questions
 TODO before release
 -------------------
 
-* create a backend that writes the SQL used for inserts
 * figure out best way to make a Python executable
-* have tests for targets being sub-par:
-
-  * misconfigured in target files (not paring start with end)
+* target validations
   * not having data generated for them
-  * no targets specified in conf file

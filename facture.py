@@ -81,29 +81,7 @@ def run():
             )
 
         targets = annotate_targets_with_output_values(targets, d)
-
-        for target in targets:
-            payload = "\n" + ",\n\n".join(target['output_values']) + "\n\n"
-            filename = target['filename']
-            start = target['positional_data_from_file']['start_line']
-            end = target['positional_data_from_file']['end_line']
-            insert_string_into_file_between_lines(payload, filename, start, end)
-
-
-def insert_string_into_file_between_lines(string, filename, start, end):
-    result = []
-    with open(filename, 'r') as f:
-        for index, line in enumerate(f):
-            linenum = index + 1
-            if linenum <= start:
-                result.append(line)
-            if linenum == start + 1:
-                result.append(string)
-            if linenum >= end:
-                result.append(line)
-
-    with open(filename, 'w') as f:
-        f.write("".join(result))
+        write_to_actual_target_files(targets)
 
 
 #############################################################################
@@ -544,6 +522,31 @@ def formatted_single_record_lines(attrs, indent):
 #############################################################################
 
 
+def write_to_actual_target_files(targets):
+    for target in targets:
+        payload = "\n" + ",\n\n".join(target['output_values']) + "\n\n"
+        filename = target['filename']
+        start = target['positional_data_from_file']['start_line']
+        end = target['positional_data_from_file']['end_line']
+        insert_string_into_file_between_lines(payload, filename, start, end)
+
+
+def insert_string_into_file_between_lines(string, filename, start, end):
+    result = []
+    with open(filename, 'r') as f:
+        for index, line in enumerate(f):
+            linenum = index + 1
+            if linenum <= start:
+                result.append(line)
+            if linenum == start + 1:
+                result.append(string)
+            if linenum >= end:
+                result.append(line)
+
+    with open(filename, 'w') as f:
+        f.write("".join(result))
+
+
 def annotate_targets_with_output_values(targets, data):
     targets = copy.deepcopy(targets)
 
@@ -598,6 +601,7 @@ def annotate_targets_with_positional_data_from_file(targets):
 
         target['positional_data_from_file'] = {'start_line': start_line, 'end_line': end_line}
     return targets
+
 
 def validate_facture_json_data(data):
     """
