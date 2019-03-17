@@ -523,12 +523,19 @@ def formatted_single_record_lines(attrs, indent):
 
 
 def write_to_actual_target_files(targets):
+    targets = targets_sorted_by_start_descending(targets)
     for target in targets:
         payload = "\n" + ",\n\n".join(target['output_values']) + "\n\n"
         filename = target['filename']
         start = target['positional_data_from_file']['start_line']
         end = target['positional_data_from_file']['end_line']
         insert_string_into_file_between_lines(payload, filename, start, end)
+
+
+def targets_sorted_by_start_descending(targets):
+    targets = copy.deepcopy(targets)
+    targets.sort(key=lambda x: x["positional_data_from_file"]["start_line"], reverse=True)
+    return targets
 
 
 def insert_string_into_file_between_lines(string, filename, start, end):
@@ -586,6 +593,7 @@ def annotate_targets_with_positional_data_from_file(targets):
                 start_line = datum['linenum']
 
         for datum in data:
+            opts = datum['data']
             if opts['target_name'] == target['name'] and opts['position'] == 'end':
                 end_line = datum['linenum']
 

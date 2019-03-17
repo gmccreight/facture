@@ -24,8 +24,6 @@ So why, oh why, would you need such a strange tool?
 How to Use
 ----------
 
-Create a ``factureconf.py`` file like any of the ones in the
-
 Go to the ``tests/examples/sql_inject_target`` directory.  Copy the
 ``factureconf.py`` to the directory you will be running ``facture`` in.  Look
 at the ``facture_json`` target section in the ``original.sql`` file into a file
@@ -108,6 +106,7 @@ I use it, etc"
 TODO before release
 -------------------
 
+* make id being sequential explicit and orderable in arguments
 * figure out best way to make a Python executable
 * target validations
   * not having data generated for them

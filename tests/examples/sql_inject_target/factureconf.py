@@ -33,21 +33,50 @@
 def conf_targets():
     return [
         {
-            'name': 'products',
+            'name': 'actors',
             'type': 'section_in_file',
             'filename': 'test_output/sql_inject_target/result.sql',
-            'section_name': 'products'
+            'section_name': 'actors'
+        },
+        {
+            'name': 'films',
+            'type': 'section_in_file',
+            'filename': 'test_output/sql_inject_target/result.sql',
+            'section_name': 'films'
+        },
+        {
+            'name': 'roles',
+            'type': 'section_in_file',
+            'filename': 'test_output/sql_inject_target/result.sql',
+            'section_name': 'roles'
         }
     ]
 
 
 def conf_tables():
     return {
-        'products': {
-            'target': 'products',
+        'actors': {
+            'target': 'actors',
             'start_id': 10,
             'attrs': {
-                'name': {'default': 'default name'},
+                'first_name': {'default': None},
+                'last_name': {'default': None}
+            }
+        },
+        'films': {
+            'target': 'films',
+            'start_id': 100,
+            'attrs': {
+                'name': {'default': None},
+                'year': {'default': None},
+            }
+        },
+        'roles': {
+            'target': 'roles',
+            'start_id': 1000,
+            'attrs': {
+                'actor_id': {},
+                'film_id': {}
             }
         },
     }
@@ -56,20 +85,14 @@ def conf_tables():
 def conf_data():
     return [
         {
-            'group': 'facture_group_testgroup1',
+            'group': 'facture_group_shawshank_redemption',
             'offset': 100,
             'data': [
-                ['products p'],
-            ]
-        },
-        {
-            'group': 'facture_group_testgroup2',
-            'offset': 200,
-            'data': [
-                [
-                    'products p',
-                    {'attrs': {'name': 'better name'}}
-                ],
+                ['actors a_mf', {'attrs': {'first_name': 'Morgan', 'last_name': 'Freeman'}}],
+                ['actors a_tr', {'attrs': {'first_name': 'Tim', 'last_name': 'Robbins'}}],
+                ['films f', {'attrs': {'name': 'Shawshank Redemption', 'year': '1994'}}],
+                ['roles r1', {'attrs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
+                ['roles r1', {'attrs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
             ]
         }
     ]
