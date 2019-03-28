@@ -101,12 +101,22 @@ and how to get it and use it.  Thinking about all the .rc files that I have
 come across in the past and wondered "what is this file, what is it for, how do
 I use it, etc"
 
+scons says: "Configuration files are Python scripts--use the power of a real programming language to solve build problems."
+
 
 -------------------
 TODO before release
 -------------------
 
 * make id being sequential explicit and orderable in arguments
+* allow any attribute to be a sequence with a default start integer
 * figure out best way to make a Python executable
 * target validations
   * not having data generated for them
+* check that it supports totally random stuff like $build
+* make the reference syntax unambiguous (not '.a.id', but actual reference key + attribute)
+* sql output
+  * show the table name in the values
+  * if multiple records of same type in output, do (1) then (2), etc
+* double-check that if you have overlap in generated data that it throws an exception
+* break into classes for the different steps

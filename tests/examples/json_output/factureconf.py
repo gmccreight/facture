@@ -38,16 +38,16 @@ def conf_tables():
     default_date = '2018-01-01 00:00:00'
     return {
         'products': {
-            'start_id': 21000000000,
             'attrs': {
+                'id': {'seq': {'start': 21000000000}},
                 'classified_code': {'default': '0000001234'},
                 'created_at': {'default': default_date},
                 'updated_at': {'default': default_date}
             }
         },
         'retailer_products': {
-            'start_id': 22000000000,
             'attrs': {
+                'id': {'seq': {'start': 22000000000}},
                 'product_id': {},
                 'retailer_id': {},
                 'created_at': {'default': default_date},
@@ -55,8 +55,8 @@ def conf_tables():
             }
         },
         'warehouses': {
-            'start_id': 23000000000,
             'attrs': {
+                'id': {'seq': {'start': 23000000000}},
                 'created_at': {'default': default_date},
                 'updated_at': {'default': default_date}
             }

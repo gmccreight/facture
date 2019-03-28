@@ -33,6 +33,7 @@ def debug(m):
 
 def se(m):
     sys.stderr.write(str(m))
+    sys.stderr.write("\n")
 
 
 if not args.doctest:
@@ -48,7 +49,7 @@ if not args.doctest:
 
 
 def run():
-    id_seqs = {}
+    seq_for = {}
     conf_tables = factureconf.conf_tables()
 
     d = factureconf.conf_data()
@@ -57,7 +58,7 @@ def run():
 
     consistency_checks_or_immediately_die(d)
 
-    d = enhance_with_generated_data(d, id_seqs, conf_tables)
+    d = enhance_with_generated_data(d, seq_for, conf_tables)
 
     d = add_table_defaults(d, conf_tables)
 
@@ -207,9 +208,9 @@ def consistency_check_no_same_groups(data):
 #############################################################################
 
 
-def enhance_with_generated_data(data, id_seqs, config):
+def enhance_with_generated_data(data, seq_for, config):
     data = add_generated_key_and_dict(data)
-    data = enhance_with_generated_data_ids(data, id_seqs, config)
+    data = enhance_with_generated_sequential_data(data, seq_for, config)
 
     data = enhance_with_referenced_foreign_ids(data)
 
@@ -221,24 +222,24 @@ def add_generated_key_and_dict(data):
 
     >>> d = [{'data': [{'table': 'calls'}]}]
     >>> add_generated_key_and_dict(d)
-    [{'data': [{'table': 'calls', 'generated': {'id': None}}]}]
+    [{'data': [{'table': 'calls', 'generated': {}}]}]
     """
 
     result = copy.deepcopy(data)
     for x in result:
         for y in x['data']:
-            y['generated'] = {'id': None}
+            y['generated'] = {}
     return result
 
 
-def enhance_with_generated_data_ids(data, id_seqs, config):
+def enhance_with_generated_sequential_data(data, seq_for, table_config):
     """This enhances the data with generated ids.
 
-    >>> id_seqs = {}
-    >>> config = {'calls': {'start_id': 300}}
+    >>> seq_for = {}
     >>> d = [{'offset': 3, 'data': \
-            [{'table': 'calls', 'generated': {'id': None}}]}]
-    >>> enhance_with_generated_data_ids(d, id_seqs, config)
+            [{'table': 'calls', 'generated': {}}]}]
+    >>> config = {'calls': {'attrs': {'id': {'seq': {'start': 300}}}}}
+    >>> enhance_with_generated_sequential_data(d, seq_for, config)
     [{'offset': 3, 'data': [{'table': 'calls', 'generated': {'id': 303}}]}]
     """
 
@@ -246,27 +247,46 @@ def enhance_with_generated_data_ids(data, id_seqs, config):
     for x in result:
         offset = x['offset']
         for y in x['data']:
-            num, id_seqs = id_for(y['table'], offset, id_seqs, config)
-            y['generated']['id'] = num
+            attribute_names = attributes_needing_sequences(table_config[y['table']])
+            for a in attribute_names:
+                num, seq_for = seq_for_table_attr(y['table'], a, offset, seq_for, table_config)
+                y['generated'][a] = num
 
     return result
 
 
-def id_for(table, offset, id_seqs, config):
-    """This generates sequence numbers for each offset
+def seq_for_table_attr(table, attribute, offset, seq_for, table_config):
+    """Generate or update sequence numbers for each attribute that has a sequence
+
+    >>> table_config = {'calls': {'attrs': {'id': {'seq': {'start': 300}}}}}
+    >>> seq_for_table_attr('calls', 'id', 200, {}, table_config)
+    (500, {'calls': {'id': 300}})
+    >>> seq_for_table_attr('calls', 'id', 400, {'calls': {'id': 630}}, table_config)
+    (1031, {'calls': {'id': 631}})
     """
 
-    if id_seqs == {}:
-        for key in config:
-            id_seqs[key] = {}
+    if seq_for == {}:
+        for t in table_config:
+            seq_for[t] = {}
 
-    if id_seqs[table].get(offset) is None:
-        id_seqs[table][offset] = config[table]['start_id'] + offset
+    if seq_for[table].get(attribute):
+        seq_for[table][attribute] = seq_for[table][attribute] + 1
+    else:
+        start = table_config[table]['attrs'][attribute]['seq']['start']
+        seq_for[table][attribute] = start
 
-    result = id_seqs[table][offset]
-    id_seqs[table][offset] += 1
+    result_without_offset = seq_for[table][attribute]
+    result_with_offset = result_without_offset + offset
+    return result_with_offset, seq_for
 
-    return result, id_seqs
+
+def attributes_needing_sequences(table_conf):
+    result = []
+    for attr_name in table_conf['attrs']:
+        attr_dict = table_conf['attrs'][attr_name]
+        if attr_dict.get('seq'):
+            result.append(attr_name)
+    return result
 
 
 def enhance_with_referenced_foreign_ids(data):
@@ -751,7 +771,7 @@ def config_for(table):
     return factureconf.conf_tables()[table]
 
 
-id_seqs = None
+seq_for = None
 
 if __name__ == '__main__':
     if args.doctest:

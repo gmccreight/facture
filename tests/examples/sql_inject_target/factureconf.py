@@ -57,24 +57,24 @@ def conf_tables():
     return {
         'actors': {
             'target': 'actors',
-            'start_id': 10,
             'attrs': {
+                'id': {'seq': {'start': 10}},
                 'first_name': {'default': None},
                 'last_name': {'default': None}
             }
         },
         'films': {
             'target': 'films',
-            'start_id': 100,
             'attrs': {
+                'id': {'seq': {'start': 100}},
                 'name': {'default': None},
                 'year': {'default': None},
             }
         },
         'roles': {
             'target': 'roles',
-            'start_id': 1000,
             'attrs': {
+                'id': {'seq': {'start': 1000}},
                 'actor_id': {},
                 'film_id': {}
             }
