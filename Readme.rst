@@ -108,8 +108,7 @@ scons says: "Configuration files are Python scripts--use the power of a real pro
 TODO before release
 -------------------
 
-* make id being sequential explicit and orderable in arguments
-* allow any attribute to be a sequence with a default start integer
+* make id be orderable in arguments
 * figure out best way to make a Python executable
 * target validations
   * not having data generated for them
