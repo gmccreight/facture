@@ -96,11 +96,11 @@ def normalize_structure(data):
 
 
 def normalize_structure_copy_raw(data):
-    """We get a certain easy-to-input structure.  Keep in in raw.
+    """We get a certain easy-to-input structure.  Keep it in raw.
 
-    >>> d = [{'data': [['calls c', {'attrs': {'f': 'b'}}]]}]
+    >>> d = [{'data': [['calls c', {'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}]]}]
     >>> normalize_structure_copy_raw(d)
-    [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}}}]}]
+    [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}}]}]
     """
 
     result = copy.deepcopy(data)
@@ -111,7 +111,8 @@ def normalize_structure_copy_raw(data):
             if len(y) == 1:
                 y.append({})
             raw = {'tablestr': y[0]}
-            raw.update({'attrs': y[1].get('attrs')})
+            raw.update({'attrs': y[1].get('attrs', {})})
+            raw.update({'refs': y[1].get('refs', {})})
             new_data.append({'raw': raw})
         x['data'] = new_data
 
@@ -298,9 +299,9 @@ def enhance_with_referenced_foreign_ids(data):
         for y in group_data:
             y['referenced'] = {}
             raw = y['raw']
-            attrs = raw.get('attrs')
-            if attrs:
-                for k, v in attrs.items():
+            refs = raw.get('refs')
+            if refs:
+                for k, v in refs.items():
                     if v[0] == '.':
                         v = point_to_alias(
                                 v, x['group'], group_data
@@ -426,6 +427,8 @@ def combine_all_into_result(data):
         for y in x['data']:
             z = y['defaults']
             z.update(y['referenced'])
+            for attr in y['raw']['attrs']:
+                z.update({attr: y['raw']['attrs'][attr]})
             z = careful_merge_dicts(z, y['generated'])
             y['combined'] = z
     return result

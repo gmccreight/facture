@@ -17,7 +17,8 @@
                 },
                 "output_sql": "-- facture_group_prod1\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000010000            -- id\n)",
                 "raw": {
-                    "attrs": null,
+                    "attrs": {},
+                    "refs": {},
                     "tablestr": "warehouses w"
                 },
                 "referenced": {},
@@ -42,7 +43,8 @@
                 },
                 "output_sql": "-- facture_group_prod1\n(\n  '0000001234',          -- classified_code\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  21000010000            -- id\n)",
                 "raw": {
-                    "attrs": null,
+                    "attrs": {},
+                    "refs": {},
                     "tablestr": "products p1"
                 },
                 "referenced": {},
@@ -67,7 +69,8 @@
                 },
                 "output_sql": "-- facture_group_prod1\n(\n  '0000001234',          -- classified_code\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  21000010001            -- id\n)",
                 "raw": {
-                    "attrs": null,
+                    "attrs": {},
+                    "refs": {},
                     "tablestr": "products p2"
                 },
                 "referenced": {},
@@ -94,7 +97,8 @@
                 },
                 "output_sql": "-- facture_group_prod1\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000010000,           -- retailer_id\n  21000010000,           -- product_id\n  22000010000            -- id\n)",
                 "raw": {
-                    "attrs": {
+                    "attrs": {},
+                    "refs": {
                         "product_id": ".p1.id",
                         "retailer_id": ".w.id"
                     },
@@ -127,7 +131,8 @@
                 },
                 "output_sql": "-- facture_group_prod1\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000010000,           -- retailer_id\n  21000010001,           -- product_id\n  22000010001            -- id\n)",
                 "raw": {
-                    "attrs": {
+                    "attrs": {},
+                    "refs": {
                         "product_id": ".p2.id",
                         "retailer_id": ".w.id"
                     },
@@ -162,7 +167,8 @@
                 },
                 "output_sql": "-- facture_group_prod2\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000001001            -- id\n)",
                 "raw": {
-                    "attrs": null,
+                    "attrs": {},
+                    "refs": {},
                     "tablestr": "warehouses w"
                 },
                 "referenced": {},
@@ -187,7 +193,8 @@
                 },
                 "output_sql": "-- facture_group_prod2\n(\n  '0000001234',          -- classified_code\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  21000001002            -- id\n)",
                 "raw": {
-                    "attrs": null,
+                    "attrs": {},
+                    "refs": {},
                     "tablestr": "products p"
                 },
                 "referenced": {},
@@ -214,7 +221,8 @@
                 },
                 "output_sql": "-- facture_group_prod2\n(\n  '2018-01-01 00:00:00', -- created_at\n  '2018-01-01 00:00:00', -- updated_at\n  23000001001,           -- retailer_id\n  21000001002,           -- product_id\n  22000001002            -- id\n)",
                 "raw": {
-                    "attrs": {
+                    "attrs": {},
+                    "refs": {
                         "product_id": ".p.id",
                         "retailer_id": ".w.id"
                     },

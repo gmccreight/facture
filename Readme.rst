@@ -113,7 +113,6 @@ TODO before release
 * target validations
   * not having data generated for them
 * check that it supports totally random stuff like $build
-* make the reference syntax unambiguous (not '.a.id', but actual reference key + attribute)
 * sql output
   * show the table name in the values
   * if multiple records of same type in output, do (1) then (2), etc

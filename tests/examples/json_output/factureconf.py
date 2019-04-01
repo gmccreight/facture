@@ -75,11 +75,11 @@ def conf_data():
                 ['products p2'],
                 [
                     'retailer_products rp1',
-                    {'attrs': {'retailer_id': '.w.id', 'product_id': '.p1.id'}}
+                    {'refs': {'retailer_id': '.w.id', 'product_id': '.p1.id'}}
                 ],
                 [
                     'retailer_products rp2',
-                    {'attrs': {'retailer_id': '.w.id', 'product_id': '.p2.id'}}
+                    {'refs': {'retailer_id': '.w.id', 'product_id': '.p2.id'}}
                 ]
             ]
         },
@@ -91,7 +91,7 @@ def conf_data():
                 ['products p'],
                 [
                     'retailer_products rp',
-                    {'attrs': {'retailer_id': '.w.id', 'product_id': '.p.id'}}
+                    {'refs': {'retailer_id': '.w.id', 'product_id': '.p.id'}}
                 ]
             ]
         }

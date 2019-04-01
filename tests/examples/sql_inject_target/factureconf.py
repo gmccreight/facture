@@ -91,8 +91,8 @@ def conf_data():
                 ['actors a_mf', {'attrs': {'first_name': 'Morgan', 'last_name': 'Freeman'}}],
                 ['actors a_tr', {'attrs': {'first_name': 'Tim', 'last_name': 'Robbins'}}],
                 ['films f', {'attrs': {'name': 'Shawshank Redemption', 'year': '1994'}}],
-                ['roles r1', {'attrs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
-                ['roles r1', {'attrs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
+                ['roles r1', {'refs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
+                ['roles r1', {'refs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
             ]
         }
     ]
