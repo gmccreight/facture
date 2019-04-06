@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import sys
+import collections
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', action="count", default=0)
@@ -64,7 +65,7 @@ def run():
 
     d = combine_all_into_result(d)
 
-    d = add_sql_output(d)
+    d = add_sql_output(d, conf_tables)
 
     targets = factureconf.conf_targets()
     targets = annotate_targets_with_positional_data_from_file(targets)
@@ -484,12 +485,16 @@ def add_target_info(data, tables, targets):
 #############################################################################
 
 
-def add_sql_output(data, indent=2):
+def add_sql_output(data, conf_tables, indent=2):
     result = copy.deepcopy(data)
     for x in result:
         group = x['group']
         for y in x['data']:
-            sql = sql_output_lines_for(group, y['combined'], indent)
+            attrs_ordered = collections.OrderedDict()
+            ordered_attrs = list(conf_tables[y['table']]['attrs'])
+            for i in ordered_attrs:
+                attrs_ordered[i] = y['combined'][i]
+            sql = sql_output_lines_for(group, attrs_ordered, indent)
             y['output_sql'] = sql
     return result
 
