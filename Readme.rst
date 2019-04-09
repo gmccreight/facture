@@ -8,17 +8,37 @@ Overview
 
 Facture is FAC-tories that create fix-TURE data.  Also, it manu-FACTURE-s data.
 
-Wiktionary says it also means: "The act or manner of making or doing anything,
-especially of a literary, musical, or pictorial production."  That's pretty cool.
+There are already factories and fixtures.  What does this tool provide that
+those don't?
+
+So, originally this tool was created for generating the test data for a
+database that had very high overhead per-insert, so batching the inserts was
+necessary.  Fixtures would solve this problem, but it's really hard to
+enumerate and manage all your scenarios in fixtures effectively.  One advantage
+that factories have is their ease of use in testing individual scenarios without
+needing to understand other scenarios.  Paritioning data can have the same effect.
+scenarios.
+your data, somehow, so you can test
+
+
+We did the batching with manual inserts for a while, but it was
+really hard to maintain the references manually, and there wasn't a clear way
+to partition the scenarios fr
 
 So why, oh why, would you need such a strange tool?
 
-* "compile"-time checks
-* materializes the output into your version-controlled files, unrolling the complexity.  Because this is automated, we can put as much effort into making the generated data comprehensible (and lineage-providing) as possible.  It's also extremely easy to see what the effects of any change you make is, since it's all laid out for you.
-* code as configuration (high level of dynamic stuff possible... as long as it runs)
+* "compile"-time data consistency checks
+* materializes the output into your version-controlled files, unrolling the
+  complexity.  Because this is automated, we can put as much effort into making
+  the generated data comprehensible (and lineage-providing) as possible.  It's
+  also extremely easy to see what the effects of any change you make is, since
+  it's all laid out for you.
+* code as configuration (high level of dynamic stuff possible... as long as it
+  runs)
 * easy to reason about each scenario in isolation: data partitioning
-* plays well with others... strangles manually created fixtures.  Integrates with how you do things, doesn't try to
-  take over completely.  Can target files or sections within files.
+* plays well with others... strangles manually created fixtures.  Integrates
+  with how you do things, doesn't try to take over completely.  Can target
+  files or sections within files.
 
 ----------
 How to Use
@@ -102,6 +122,10 @@ come across in the past and wondered "what is this file, what is it for, how do
 I use it, etc"
 
 scons says: "Configuration files are Python scripts--use the power of a real programming language to solve build problems."
+
+Wiktionary says it also means: "The act or manner of making or doing anything,
+especially of a literary, musical, or pictorial production."  That's pretty cool.
+
 
 
 -------------------
