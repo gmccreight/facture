@@ -18,3 +18,15 @@ clean-test-output:
 	rm -rf test_output
 	mkdir -p test_output/json_output
 	mkdir -p test_output/sql_inject_target
+
+release: clean-releases
+	python3 setup.py sdist
+
+clean-releases:
+	rm -rf dist
+
+publish-test:
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+install-test:
+	pip3 install --index-url https://test.pypi.org/simple/ facture
