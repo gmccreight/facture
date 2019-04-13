@@ -1,12 +1,12 @@
 from distutils.core import setup
 
 setup(
-    name='Facture',
-    version='0.1.5',
+    name='Facture Data',
+    version='0.1.6',
     author='Gordon McCreight',
     author_email='gordon@mccreight.com',
-    packages=['facture'],
-    url='http://pypi.python.org/pypi/Facture/',
+    packages=['facture-data'],
+    url='http://pypi.python.org/pypi/FactureData/',
     license='LICENSE.txt',
     description='Factories that create fixtures',
     long_description=open('README.rst').read(),

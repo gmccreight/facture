@@ -13,7 +13,7 @@ elaborating scenarios.
 Installation
 ------------
 
-``pip install facture``
+``pip install facture-data``
 
 --------------------------------------------------
 How is this different from factories and fixtures?

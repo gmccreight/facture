@@ -30,3 +30,6 @@ publish-test:
 
 install-test:
 	pip3 install --index-url https://test.pypi.org/simple/ facture
+
+publish:
+	twine upload dist/*
