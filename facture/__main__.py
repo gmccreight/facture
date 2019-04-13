@@ -49,7 +49,7 @@ if not args.doctest:
     import factureconf # noqa
 
 
-def run():
+def main():
     seq_for = {}
     conf_tables = factureconf.conf_tables()
 
@@ -786,4 +786,4 @@ if __name__ == '__main__':
         import doctest
         doctest.testmod()
     else:
-        run()
+        main()
