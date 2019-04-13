@@ -33,3 +33,9 @@ install-test:
 
 publish:
 	twine upload dist/*
+
+tag:
+	git tag v`grep -o "version.*" setup.py | egrep -o "[0-9.]+"`
+
+tag-push:
+	git push origin v`grep -o "version.*" setup.py | egrep -o "[0-9.]+"`
