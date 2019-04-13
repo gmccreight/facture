@@ -6,7 +6,7 @@ setup(
     author='Gordon McCreight',
     author_email='gordon@mccreight.com',
     packages=['facture-data'],
-    url='http://pypi.python.org/pypi/FactureData/',
+    url='http://pypi.python.org/pypi/Facture-Data/',
     license='LICENSE.txt',
     description='Factories that create fixtures',
     long_description=open('README.rst').read(),
