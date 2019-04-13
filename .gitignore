@@ -2,3 +2,4 @@ test_output
 Facture.egg-info
 __pycache__
 *.pyc
+dist

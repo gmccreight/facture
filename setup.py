@@ -10,6 +10,7 @@ setup(
     license='LICENSE.txt',
     description='Factories that create fixtures',
     long_description=open('README.rst').read(),
+    long_description_content_type='text/x-rst',
     install_requires=[],
     entry_points={
         'console_scripts': [

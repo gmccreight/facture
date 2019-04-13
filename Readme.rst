@@ -8,6 +8,12 @@ Overview
 
 Facture is FAC-tories that generate partition-isolated fix-TURE data for scenarios.
 
+------------
+Installation
+------------
+
+``pip install facture``
+
 --------------------------------------------------
 How is this different from factories and fixtures?
 --------------------------------------------------
