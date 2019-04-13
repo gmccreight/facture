@@ -19,8 +19,8 @@ Installation
 How is this different from factories and fixtures?
 --------------------------------------------------
 
-Originally this tool was created for generating the test data for a database
-that had very high overhead per-insert, so using traditional data factories and
+Originally this tool was created to generate the test data for a database
+that had very high overhead per-insert.  Using traditional data factories and
 individual transactions with rollback would not work; batching the inserts was
 necessary.
 
@@ -37,11 +37,8 @@ scenarios.
 How to Use
 ----------
 
-There is a fair amount of configuration that goes into setting facture up, so I
-recommend that you look at the ``tests/examples/sql_inject_target`` example and
-how the Makefile runs it.
-
-That said, here is an example data group that shows how foreign keys work::
+There is a fair amount of configuration that goes into setting facture up, but
+here is a quick inline example data group that shows how foreign keys work::
 
     'group': 'facture_group_shawshank_redemption',
     'offset': 100,
@@ -53,19 +50,21 @@ That said, here is an example data group that shows how foreign keys work::
         ['roles r1', {'refs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
     ]
 
-For the deeper dive go to the ``tests/examples/sql_inject_target`` directory.
-Copy the ``factureconf.py`` to the directory you will be running ``facture``
+For a deeper dive I recommend that you look at this example:
+https://github.com/gmccreight/facture/tree/master/tests/examples/sql_inject_target
+
+Copy the ``factureconf.py`` there to the directory you will be running ``facture``
 in.  Look at the ``facture_json`` target section in the ``original.sql`` file
-and move it into a file of your own choosing.  Update the ``conf_targets``
-section of your ``factureconf.py`` file to point to the file where you put the
-``facture_json``.
+and copy it into a file of your own choosing.  Update the ``conf_targets``
+section of your newly created ``factureconf.py`` file to point to the file
+where you put the ``facture_json``.
 
 Run::
 
     facture
 
-That section you added to your target file should now be filled in with some
-generated data.  You're off to the races!
+Your target file should now be filled in with some generated data.  You're off
+to the races!
 
 -------------------
 Additional benefits

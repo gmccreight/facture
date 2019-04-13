@@ -36,12 +36,17 @@ if not args.doctest:
     else:
         if not os.path.isfile("factureconf.py"):
             raise ConfError("Either put a factureconf.py file in this directory or set --conf-dir")
+        else:
+            sys.path.insert(0, os.getcwd())
 
     import factureconf # noqa
 
 
 def main():
     seq_for = {}
+
+    logging.debug("setting up data")
+
     conf_tables = factureconf.conf_tables()
 
     d = factureconf.conf_data()
@@ -50,13 +55,19 @@ def main():
 
     consistency_checks_or_immediately_die(d)
 
+    logging.debug("generating data")
+
     d = enhance_with_generated_data(d, seq_for, conf_tables)
 
     d = add_table_defaults(d, conf_tables)
 
     d = combine_all_into_result(d)
 
+    logging.debug("adding sql output")
+
     d = add_sql_output(d, conf_tables)
+
+    logging.debug("annotating with target information")
 
     targets = factureconf.conf_targets()
     targets = annotate_targets_with_positional_data_from_file(targets)
@@ -65,8 +76,10 @@ def main():
     if args.output_type and args.output_type == 'json':
         print(json.dumps(d, indent=4, sort_keys=True, default=str))
 
-    if not args.skip_targets:
-
+    if args.skip_targets:
+        logging.debug("skipping exporting to targets because of --skip-targets")
+    else:
+        logging.debug("exporting to targets")
         if len(targets) < 1:
             raise ConfError(
                 "You have no targets specified in the conf_targets function."
