@@ -6,7 +6,8 @@ Facture
 Overview
 --------
 
-Facture is FAC-tories that generate partition-isolated fix-TURE data for scenarios.
+Facture is FAC-tories that generate partition-isolated fix-TURE data, ideal for
+elaborating scenarios.
 
 ------------
 Installation
