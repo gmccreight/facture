@@ -28,15 +28,6 @@ class ConfError(Exception):
     pass
 
 
-def debug(m):
-    logging.debug(m)
-
-
-def se(m):
-    sys.stderr.write(str(m))
-    sys.stderr.write("\n")
-
-
 if not args.doctest:
     if args.conf_dir:
         if not os.path.isdir(args.conf_dir):
