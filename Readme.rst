@@ -6,39 +6,25 @@ Facture
 Overview
 --------
 
-Facture is FAC-tories that create fix-TURE data.  Also, it manu-FACTURE-s data.
+Facture is FAC-tories that generate partition-isolated fix-TURE data for scenarios.
 
-There are already factories and fixtures.  What does this tool provide that
-those don't?
+--------------------------------------------------
+How is this different from factories and fixtures?
+--------------------------------------------------
 
-So, originally this tool was created for generating the test data for a
-database that had very high overhead per-insert, so batching the inserts was
-necessary.  Fixtures would solve this problem, but it's really hard to
-enumerate and manage all your scenarios in fixtures effectively.  One advantage
-that factories have is their ease of use in testing individual scenarios without
-needing to understand other scenarios.  Paritioning data can have the same effect.
+Originally this tool was created for generating the test data for a database
+that had very high overhead per-insert, so using traditional data factories and
+individual transactions with rollback would not work; batching the inserts was
+necessary.
+
+Fixtures alone could solve this problem, but it's really hard to enumerate and
+manage the joins in a large number of scenarios in fixtures effectively.  The
+primary advantage that factories have is their ease of use in testing
+individual scenarios without needing to understand other scenarios or manage a
+corpus of shared data.  Carefully paritioning inserted data so the data is
+unambiguously owned by a scenario can provide the same benefit as factories,
+where it becomes easy to understand the data associated with individual
 scenarios.
-your data, somehow, so you can test
-
-
-We did the batching with manual inserts for a while, but it was
-really hard to maintain the references manually, and there wasn't a clear way
-to partition the scenarios fr
-
-So why, oh why, would you need such a strange tool?
-
-* "compile"-time data consistency checks
-* materializes the output into your version-controlled files, unrolling the
-  complexity.  Because this is automated, we can put as much effort into making
-  the generated data comprehensible (and lineage-providing) as possible.  It's
-  also extremely easy to see what the effects of any change you make is, since
-  it's all laid out for you.
-* code as configuration (high level of dynamic stuff possible... as long as it
-  runs)
-* easy to reason about each scenario in isolation: data partitioning
-* plays well with others... strangles manually created fixtures.  Integrates
-  with how you do things, doesn't try to take over completely.  Can target
-  files or sections within files.
 
 ----------
 How to Use
@@ -62,83 +48,24 @@ That section in your target file should now be filled in with some data.
 You're off to the races!
 
 -------------------
-How it works
+Additional benefits
 -------------------
 
-The steps in the process are:
+* "compile"-time factory configuration consistency checks.  Checks for many
+  typos, join issues, etc.
 
-* sequence creation
-* data joins
-* formatting
-* output to targets
+* Materializes the output into your version-controlled files, unrolling the
+  complexity.  Because the fixtures that we generate are automatically created,
+  we can put a lot of effort into making the generated data comprehensible (and
+  lineage-providing).  This means we annotate all generated data with the column names, 
+  and the scenario name.  It's also extremely easy to see what the effects of
+  any change you make is, since it's all laid out for you.
 
-=================
-Sequence Creation
-=================
+* Code as configuration.  The configuration files are written in Python, so you have
+  the full power of the language.
 
-=================
-Data Joins
-=================
+* Easy to reason about each scenario in complete isolation because of data partitioning
 
-=================
-Formatting
-=================
-
-=================
-Output to Targets
-=================
-
-Unless you specify ``--skip-targets``, facture will verify that you have added
-at least a single target, and will output into that target.
-
---------
-Approach
---------
-
-This is my favorite section of every project.  It's where I reflect on the
-approach I have taken, how I feel about it, and compare and contrast with
-approaches I've taken in the past, in an attempt to always be improving.  It
-reads a bit like a blog post.  Yes, it's a bit navel-gazing.  No, I'm not going
-to remove it, because I think it's critically important, at least for me.  Feel
-free to skip it.  It's at the bottom for a reason.
-
-One thing I've discovered about myself over the past several years is that I
-really dislike being confused, particularly when it's entirely avoidable.
-
-I think we owe it to others to put in the effort to polish our creations to
-overcome the user's cognitive burden as much as possible.  This article on
-research debt really struck a chord with me:
-https://distill.pub/2017/research-debt/
-
-No nil checks.  Structural normalization and validation as soon as possible, then confident code after that.
-
-Annotation - build up an evermore complete data structure over time
-
-All on one page - the single document answers all questions
-
-In the example configuration files, boilerplate that explains what the tool is
-and how to get it and use it.  Thinking about all the .rc files that I have
-come across in the past and wondered "what is this file, what is it for, how do
-I use it, etc"
-
-scons says: "Configuration files are Python scripts--use the power of a real programming language to solve build problems."
-
-Wiktionary says it also means: "The act or manner of making or doing anything,
-especially of a literary, musical, or pictorial production."  That's pretty cool.
-
-
-
--------------------
-TODO before release
--------------------
-
-* make id be orderable in arguments
-* figure out best way to make a Python executable
-* target validations
-  * not having data generated for them
-* check that it supports totally random stuff like $build
-* sql output
-  * show the table name in the values
-  * if multiple records of same type in output, do (1) then (2), etc
-* double-check that if you have overlap in generated data that it throws an exception
-* break into classes for the different steps
+* Plays well with others... can be introduced into existing fixtures.  Integrates
+  with how you do things, doesn't try to take over completely.  Can target
+  files or sections within files.

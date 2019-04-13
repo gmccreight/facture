@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     author='Gordon McCreight',
     author_email='gordon@mccreight.com',
-    packages=['facture'],  # , 'facture.test'],
+    packages=['facture'],
     url='http://pypi.python.org/pypi/Facture/',
     license='LICENSE.txt',
     description='Factories that create fixtures',
