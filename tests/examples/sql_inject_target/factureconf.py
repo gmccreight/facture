@@ -30,29 +30,6 @@
 # effects you need to be aware of.
 
 
-def conf_targets():
-    return [
-        {
-            'name': 'actors',
-            'type': 'section_in_file',
-            'filename': 'test_output/sql_inject_target/result.sql',
-            'section_name': 'actors'
-        },
-        {
-            'name': 'films',
-            'type': 'section_in_file',
-            'filename': 'test_output/sql_inject_target/result.sql',
-            'section_name': 'films'
-        },
-        {
-            'name': 'roles',
-            'type': 'section_in_file',
-            'filename': 'test_output/sql_inject_target/result.sql',
-            'section_name': 'roles'
-        }
-    ]
-
-
 def conf_tables():
     return {
         'actors': {
@@ -96,3 +73,28 @@ def conf_data():
             ]
         }
     ]
+
+
+def conf_targets():
+    return [
+        {
+            'name': 'actors',
+            'type': 'section_in_file',
+            'filename': 'test_output/sql_inject_target/result.sql',
+            'section_name': 'actors'
+        },
+        {
+            'name': 'films',
+            'type': 'section_in_file',
+            'filename': 'test_output/sql_inject_target/result.sql',
+            'section_name': 'films'
+        },
+        {
+            'name': 'roles',
+            'type': 'section_in_file',
+            'filename': 'test_output/sql_inject_target/result.sql',
+            'section_name': 'roles'
+        }
+    ]
+
+
