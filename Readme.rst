@@ -37,22 +37,35 @@ scenarios.
 How to Use
 ----------
 
-Go to the ``tests/examples/sql_inject_target`` directory.  Copy the
-``factureconf.py`` to the directory you will be running ``facture`` in.  Look
-at the ``facture_json`` target section in the ``original.sql`` file into a file
-of your own choosing.  Update the ``conf_targets`` section of your
-``factureconf.py`` file to point to the file where you put the ``facture_json``.
+There is a fair amount of configuration that goes into setting facture up, so I
+recommend that you look at the ``tests/examples/sql_inject_target`` example and
+how the Makefile runs it.
 
-Please consider keeping the boilerplate at the top of the configuration file.
-It will help people who have never come across facture before to orient
-themselves quickly.
+That said, here is an example data group that shows how foreign keys work::
+
+    'group': 'facture_group_shawshank_redemption',
+    'offset': 100,
+    'data': [
+        ['actors a_mf', {'attrs': {'first_name': 'Morgan', 'last_name': 'Freeman'}}],
+        ['actors a_tr', {'attrs': {'first_name': 'Tim', 'last_name': 'Robbins'}}],
+        ['films f', {'attrs': {'name': 'Shawshank Redemption', 'year': '1994'}}],
+        ['roles r1', {'refs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
+        ['roles r1', {'refs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
+    ]
+
+For the deeper dive go to the ``tests/examples/sql_inject_target`` directory.
+Copy the ``factureconf.py`` to the directory you will be running ``facture``
+in.  Look at the ``facture_json`` target section in the ``original.sql`` file
+and move it into a file of your own choosing.  Update the ``conf_targets``
+section of your ``factureconf.py`` file to point to the file where you put the
+``facture_json``.
 
 Run::
 
     facture
 
-That section in your target file should now be filled in with some data.
-You're off to the races!
+That section you added to your target file should now be filled in with some
+generated data.  You're off to the races!
 
 -------------------
 Additional benefits
