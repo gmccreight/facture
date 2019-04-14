@@ -36,6 +36,7 @@ def conf_tables():
             'target': 'actors',
             'attrs': {
                 'id': {'seq': {'start': 10}},
+                'job_run_id': {},
                 'first_name': {'default': None},
                 'last_name': {'default': None}
             }
@@ -65,8 +66,16 @@ def conf_data():
             'group': 'facture_group_shawshank_redemption',
             'offset': 100,
             'data': [
-                ['actors a_mf', {'attrs': {'first_name': 'Morgan', 'last_name': 'Freeman'}}],
-                ['actors a_tr', {'attrs': {'first_name': 'Tim', 'last_name': 'Robbins'}}],
+                ['actors a_mf', {'attrs': {
+                    'job_run_id': {'raw': '$build_id'},
+                    'first_name': 'Morgan',
+                    'last_name': 'Freeman'
+                }}],
+                ['actors a_tr', {'attrs': {
+                    'job_run_id': {'raw': '$build_id'},
+                    'first_name': 'Tim',
+                    'last_name': 'Robbins'
+                }}],
                 ['films f', {'attrs': {'name': 'Shawshank Redemption', 'year': '1994'}}],
                 ['roles r1', {'refs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
                 ['roles r1', {'refs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]

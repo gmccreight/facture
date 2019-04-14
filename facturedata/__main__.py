@@ -517,6 +517,7 @@ def formatted_single_record_lines(attrs, indent):
 
     >>> attrs = {\
         "id": 21000010000,\
+        "job_run_id": {"raw": "$build_id"},\
         "classified_code": "0000001234",\
         "created_at": "2018-01-01 00:00:00",\
         "updated_at": "2018-01-01 00:00:00"\
@@ -524,10 +525,12 @@ def formatted_single_record_lines(attrs, indent):
     >>> formatted_single_record_lines(attrs, 0)[0]
     '21000010000,           -- id'
     >>> formatted_single_record_lines(attrs, 0)[1]
-    "'0000001234',          -- classified_code"
+    '$build_id,             -- job_run_id'
     >>> formatted_single_record_lines(attrs, 0)[2]
-    "'2018-01-01 00:00:00', -- created_at"
+    "'0000001234',          -- classified_code"
     >>> formatted_single_record_lines(attrs, 0)[3]
+    "'2018-01-01 00:00:00', -- created_at"
+    >>> formatted_single_record_lines(attrs, 0)[4]
     "'2018-01-01 00:00:00'  -- updated_at"
 
     >>> formatted_single_record_lines(attrs, 2)[0]
@@ -542,7 +545,15 @@ def formatted_single_record_lines(attrs, indent):
         value = i[1][1]
         key = i[1][0]
         indent_str = ' ' * indent
-        value_str = "{}".format(repr(value))
+        value_str = ''
+        if isinstance(value, dict):
+            if not value.get('raw'):
+                raise ConfError(
+                    "value is dict but no raw key {}".format(value)
+                )
+            value_str = value['raw']
+        else:
+            value_str = "{}".format(repr(value))
         comma_or_space = ' '
         if index < len(attrs.items()) - 1:
             comma_or_space = ','
