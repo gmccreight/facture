@@ -537,14 +537,11 @@ def formatted_single_record_lines(attrs, indent):
     '  21000010000,           -- id'
     """
 
-    max_width = max([len(repr(i)) for i in attrs.values()])
+    with_value_str = []
+    for i in attrs.items():
+        key = i[0]
+        value = i[1]
 
-    results = []
-    for i in enumerate(attrs.items()):
-        index = i[0]
-        value = i[1][1]
-        key = i[1][0]
-        indent_str = ' ' * indent
         value_str = ''
         if isinstance(value, dict):
             if not value.get('raw'):
@@ -554,6 +551,18 @@ def formatted_single_record_lines(attrs, indent):
             value_str = value['raw']
         else:
             value_str = "{}".format(repr(value))
+
+        with_value_str.append({'key': i[0], 'value': value, 'value_str': value_str})
+
+    max_width = max([len(i['value_str']) for i in with_value_str])
+
+    results = []
+    for i in enumerate(with_value_str):
+        index = i[0]
+        key = i[1]['key']
+        value_str = i[1]['value_str']
+
+        indent_str = ' ' * indent
         comma_or_space = ' '
         if index < len(attrs.items()) - 1:
             comma_or_space = ','

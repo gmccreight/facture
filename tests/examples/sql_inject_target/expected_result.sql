@@ -8,18 +8,18 @@ values
 
 -- facture_group_shawshank_redemption
 (
-  110,                  -- id
-  $build_id,            -- job_run_id
-  'Morgan',             -- first_name
-  'Freeman'             -- last_name
+  110,       -- id
+  $build_id, -- job_run_id
+  'Morgan',  -- first_name
+  'Freeman'  -- last_name
 ),
 
 -- facture_group_shawshank_redemption
 (
-  111,                  -- id
-  $build_id,            -- job_run_id
-  'Tim',                -- first_name
-  'Robbins'             -- last_name
+  111,       -- id
+  $build_id, -- job_run_id
+  'Tim',     -- first_name
+  'Robbins'  -- last_name
 )
 
 -- facture_json: {"target_name": "actors", "position": "end"}
