@@ -6,7 +6,7 @@
 # `facture`.
 #
 # Facture is written in Python.  It can be installed on your system by doing:
-#   pip install facture
+#   pip install facturedata
 #
 # If you have Python set up in a normal way, installing facture will create a
 # `facture` binary in your PATH, which you should be able to run simply by
