@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='facturedata',
-    version='0.1.11',
+    version='0.1.12',
     author='Gordon McCreight',
     author_email='gordon@mccreight.com',
     packages=['facturedata'],
