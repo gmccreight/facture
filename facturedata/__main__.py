@@ -12,7 +12,6 @@ from facturedata.core import consistency_checks_or_immediately_die, normalize_st
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', action="count", default=0)
-parser.add_argument('--doctest', action="store_true")
 parser.add_argument('--conf-dir', type=str)
 parser.add_argument('--output-type', type=str, choices=['json', 'sql'])
 parser.add_argument('--skip-targets', action="store_true")
@@ -26,18 +25,17 @@ elif args.v >= 1:
 
 
 
-if not args.doctest:
-    if args.conf_dir:
-        if not os.path.isdir(args.conf_dir):
-            raise ConfError("conf-dir {} does not exist".format(args.conf_dir))
-        sys.path.insert(0, args.conf_dir)
+if args.conf_dir:
+    if not os.path.isdir(args.conf_dir):
+        raise ConfError("conf-dir {} does not exist".format(args.conf_dir))
+    sys.path.insert(0, args.conf_dir)
+else:
+    if not os.path.isfile("factureconf.py"):
+        raise ConfError("Either put a factureconf.py file in this directory or set --conf-dir")
     else:
-        if not os.path.isfile("factureconf.py"):
-            raise ConfError("Either put a factureconf.py file in this directory or set --conf-dir")
-        else:
-            sys.path.insert(0, os.getcwd())
+        sys.path.insert(0, os.getcwd())
 
-    import factureconf # noqa
+import factureconf # noqa
 
 
 def main():
@@ -98,8 +96,4 @@ def config_for(table):
 seq_for = None
 
 if __name__ == '__main__':
-    if args.doctest:
-        import doctest
-        doctest.testmod()
-    else:
-        main()
+    main()

@@ -57,7 +57,7 @@ def normalize_structure_ensure_dictionaries(data):
     >>> d = [{'data': [{'raw': {'tablestr': 't', 'attrs': {'f': 'b'}}}]}]
     >>> normalize_structure_ensure_dictionaries(d)
     Traceback (most recent call last):
-    ConfError: in "data", "t" needs an alias
+    core.ConfError: in "data", "t" needs an alias
     """
 
     result = copy.deepcopy(data)
@@ -95,7 +95,7 @@ def consistency_check_offset(data):
 
     >>> consistency_check_offset([{'offset': 100}, {'offset': 100}])
     Traceback (most recent call last):
-    ConfError: These offsets are duplicated: {100}
+    core.ConfError: These offsets are duplicated: {100}
     """
 
     offsets = [i['offset'] for i in data]
@@ -243,15 +243,15 @@ def point_to_alias(refstr, group_name, group_data):
 
     >>> point_to_alias('.id', 'z', d)
     Traceback (most recent call last):
-    ConfError: refstr ".id" incorrectly formatted in group "z"
+    core.ConfError: refstr ".id" incorrectly formatted in group "z"
 
     >>> point_to_alias('.x.id', 'z', d)
     Traceback (most recent call last):
-    ConfError: refstr: alias "x" does not exist in group "z"
+    core.ConfError: refstr: alias "x" does not exist in group "z"
 
     >>> point_to_alias('.p.y', 'z', d)
     Traceback (most recent call last):
-    ConfError: key "y" missing for alias "p" in group "z"
+    core.ConfError: key "y" missing for alias "p" in group "z"
     """
 
     def err(m):
@@ -308,7 +308,7 @@ def add_table_defaults(data, my_conf_tables):
 
     >>> add_table_defaults(d, c)
     Traceback (most recent call last):
-    ConfError: table "whoops" has no default attrs conf
+    core.ConfError: table "whoops" has no default attrs conf
     """
 
     result = copy.deepcopy(data)
@@ -380,7 +380,7 @@ def add_target_info(data, tables, targets):
 
     >>> add_target_info(d, tables, targets)
     Traceback (most recent call last):
-    ConfError: target 'products' from table 'products' does not exist
+    core.ConfError: target 'products' from table 'products' does not exist
     """
     result = copy.deepcopy(data)
     for x in result:
@@ -598,7 +598,7 @@ def validate_facture_json_data(data):
     >>> data = get_facture_json_data_from_file('foo.sql', file_data)
     >>> validate_facture_json_data(data)
     Traceback (most recent call last):
-    ConfError: file 'foo.sql' starts target 'items' more than once
+    core.ConfError: file 'foo.sql' starts target 'items' more than once
 
     >>> file_data = '''
     ... -- facture_json: {"target_name": "items", "position": "start"}
@@ -607,7 +607,7 @@ def validate_facture_json_data(data):
     >>> data = get_facture_json_data_from_file('foo.sql', file_data)
     >>> validate_facture_json_data(data)
     Traceback (most recent call last):
-    ConfError: file 'foo.sql' starts target 'items' but does not end it
+    core.ConfError: file 'foo.sql' starts target 'items' but does not end it
 
     >>> file_data = '''
     ... -- facture_json: {"target_name": "items", "position": "end"}
@@ -616,7 +616,7 @@ def validate_facture_json_data(data):
     >>> data = get_facture_json_data_from_file('foo.sql', file_data)
     >>> validate_facture_json_data(data)
     Traceback (most recent call last):
-    ConfError: file 'foo.sql' ends target 'items' but does not start it
+    core.ConfError: file 'foo.sql' ends target 'items' but does not start it
     """
 
     target_names_for_file = {}
@@ -695,7 +695,7 @@ def parse_facture_json_line(line, filename, linenum):
     >>> l = '-- facture_json: {whoops": "end"}'
     >>> parse_facture_json_line(l, './foo.sql', 34)
     Traceback (most recent call last):
-    ConfError: facture_json on line 34 in './foo.sql' is not valid JSON
+    core.ConfError: facture_json on line 34 in './foo.sql' is not valid JSON
     """
 
     m = re.match(r'.*facture_json: (.*)', line)

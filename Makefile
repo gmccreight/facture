@@ -4,7 +4,7 @@
 all: test
 
 test: clean-test-output
-	./facturedata/__main__.py --doctest
+	python3 -m doctest ./facturedata/core.py
 
 	./facturedata/__main__.py --conf-dir="tests/examples/json_output" --skip-targets --output-type=json > test_output/json_output/output.json
 	diff tests/examples/json_output/expected_output.json test_output/json_output/output.json && echo OK
