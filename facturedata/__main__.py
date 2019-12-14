@@ -5,10 +5,10 @@ import json
 import logging
 import os
 import sys
-
-from facturedata.core import consistency_checks_or_immediately_die, normalize_structure, enhance_with_generated_data, \
-    add_table_defaults, combine_all_into_result, add_sql_output, annotate_targets_with_positional_data_from_file, \
-    add_target_info, ConfError, annotate_targets_with_output_values, write_to_actual_target_files
+try:
+    from .core import *
+except ImportError:
+    from core import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', action="count", default=0)
