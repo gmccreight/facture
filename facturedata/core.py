@@ -700,7 +700,7 @@ def parse_facture_json_line(line, filename, linenum):
 
     m = re.match(r'.*facture_json: (.*)', line)
     if m:
-        json_text = m[1]
+        json_text = m.group(1)
         result = None
         try:
             result = json.loads(json_text)
