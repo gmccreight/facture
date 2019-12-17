@@ -28,34 +28,38 @@
 # you can be confident that if you make changes here and the output of running
 # facture is what you expect, you're good... there are no additional side
 # effects you need to be aware of.
+#
+# One important note is if you're running Python <= 3.5 then the table 'attrs'
+# must be defined in an OrderedDict in order to retain attr write order!
 
+import collections
 
 def conf_tables():
     return {
         'actors': {
             'target': 'actors',
-            'attrs': {
-                'id': {'seq': {'start': 10}},
-                'job_run_id': {},
-                'first_name': {'default': None},
-                'last_name': {'default': None}
-            }
+            'attrs': collections.OrderedDict([
+                ('id', {'seq': {'start': 10}}),
+                ('job_run_id', {}),
+                ('first_name', {'default': None}),
+                ('last_name', {'default': None})
+            ])
         },
         'films': {
             'target': 'films',
-            'attrs': {
-                'id': {'seq': {'start': 100}},
-                'name': {'default': None},
-                'year': {'default': None},
-            }
+            'attrs': collections.OrderedDict([
+                ('id', {'seq': {'start': 100}}),
+                ('name', {'default': None}),
+                ('year', {'default': None}),
+            ])
         },
         'roles': {
             'target': 'roles',
-            'attrs': {
-                'id': {'seq': {'start': 1000}},
-                'actor_id': {},
-                'film_id': {}
-            }
+            'attrs': collections.OrderedDict([
+                ('id', {'seq': {'start': 1000}}),
+                ('actor_id', {}),
+                ('film_id', {})
+            ])
         },
     }
 
