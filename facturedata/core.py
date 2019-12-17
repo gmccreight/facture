@@ -4,11 +4,10 @@ import collections
 import json
 import sys
 
-ordered_dict_version = (3,6)
+ordered_dict_version = (3, 6)
 HAS_DEFAULT_ORDERED_DICT = sys.version_info > ordered_dict_version
 
 #############################################################################
-
 
 
 class ConfError(Exception):
@@ -465,6 +464,7 @@ def formatted_single_record_lines(attrs, indent):
 
     >>> formatted_single_record_lines(attrs, 2)[0]
     '  21000010000,           -- id'
+
     """
 
     with_value_str = []
