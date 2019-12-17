@@ -2,6 +2,10 @@ import copy
 import re
 import collections
 import json
+import sys
+
+ordered_dict_version = (3, 6)
+HAS_DEFAULT_ORDERED_DICT = sys.version_info > ordered_dict_version
 
 #############################################################################
 
@@ -21,8 +25,9 @@ def normalize_structure_copy_raw(data):
     """We get a certain easy-to-input structure.  Keep it in raw.
 
     >>> d = [{'data': [['calls c', {'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}]]}]
-    >>> normalize_structure_copy_raw(d)
-    [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}}]}]
+    >>> result = normalize_structure_copy_raw(d)
+    >>> [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}}]}] == result
+    True
     """
 
     result = copy.deepcopy(data)
@@ -144,8 +149,9 @@ def add_generated_key_and_dict(data):
     """This adds the 'generated' key and dictionary
 
     >>> d = [{'data': [{'table': 'calls'}]}]
-    >>> add_generated_key_and_dict(d)
-    [{'data': [{'table': 'calls', 'generated': {}}]}]
+    >>> result = add_generated_key_and_dict(d)
+    >>> result == [{'data': [{'table': 'calls', 'generated': {}}]}]
+    True
     """
 
     result = copy.deepcopy(data)
@@ -162,8 +168,9 @@ def enhance_with_generated_sequential_data(data, seq_for, table_config):
     >>> d = [{'offset': 3, 'data': \
             [{'table': 'calls', 'generated': {}}]}]
     >>> config = {'calls': {'attrs': {'id': {'seq': {'start': 300}}}}}
-    >>> enhance_with_generated_sequential_data(d, seq_for, config)
-    [{'offset': 3, 'data': [{'table': 'calls', 'generated': {'id': 303}}]}]
+    >>> result = enhance_with_generated_sequential_data(d, seq_for, config)
+    >>> result == [{'offset': 3, 'data': [{'table': 'calls', 'generated': {'id': 303}}]}]
+    True
     """
 
     result = copy.deepcopy(data)
@@ -299,9 +306,9 @@ def add_table_defaults(data, my_conf_tables):
     >>> d = [{'data': [{'table': 'calls'}]}]
     >>> c = {'calls': {'attrs': {'foo': {'default': 'bar'}}}}
 
-    >>> add_table_defaults(d, c)
-    [{'data': [{'table': 'calls', 'defaults': {'foo': 'bar'}}]}]
-
+    >>> result = add_table_defaults(d, c)
+    >>> result == [{'data': [{'table': 'calls', 'defaults': {'foo': 'bar'}}]}]
+    True
 
     >>> d = [{'data': [{'table': 'whoops'}]}]
     >>> c = {'calls': {'attrs': {'foo': {'default': 'bar'}}}}
@@ -362,17 +369,17 @@ def add_target_info(data, tables, targets):
     >>> tables = {'products': {'target': 'products'}}
     >>> targets = [{ 'name': 'products', 'type': 'foo' }]
 
-    >>> add_target_info(d, tables, targets)
-    [{'data': [{'table': 'products', 'target': {'name': 'products', 'type': 'foo'}}]}]
-
+    >>> result = add_target_info(d, tables, targets)
+    >>> result == [{'data': [{'table': 'products', 'target': {'name': 'products', 'type': 'foo'}}]}]
+    True
 
     >>> d = [{'data': [{'table': 'products'}]}]
     >>> tables = {'products': {'start_id': 1000}}
     >>> targets = [{ 'name': 'products', 'type': 'foo' }]
 
-    >>> add_target_info(d, tables, targets)
-    [{'data': [{'table': 'products', 'target': None}]}]
-
+    >>> result = add_target_info(d, tables, targets)
+    >>> result == [{'data': [{'table': 'products', 'target': None}]}]
+    True
 
     >>> d = [{'data': [{'table': 'products'}]}]
     >>> tables = {'products': {'target': 'products'}}
@@ -412,8 +419,13 @@ def add_sql_output(data, conf_tables, indent=2):
         group = x['group']
         for y in x['data']:
             attrs_ordered = collections.OrderedDict()
-            ordered_attrs = list(conf_tables[y['table']]['attrs'])
-            for i in ordered_attrs:
+            ordered_attrs = conf_tables[y['table']]['attrs']
+            if not HAS_DEFAULT_ORDERED_DICT and not isinstance(ordered_attrs, collections.OrderedDict):
+                raise ConfError(
+                    """table '{}' has unordered attrs. when using a version of python < 3.6 the attrs must be in 
+                    a collection.OrderedDict""".format(y['table'])
+                )
+            for i in list(ordered_attrs):
                 attrs_ordered[i] = y['combined'][i]
             sql = sql_output_lines_for(group, attrs_ordered, indent)
             y['output_sql'] = sql
@@ -432,13 +444,13 @@ def sql_output_lines_for(group, attrs, indent=2):
 def formatted_single_record_lines(attrs, indent):
     """ Format the record data
 
-    >>> attrs = {\
-        "id": 21000010000,\
-        "job_run_id": {"raw": "$build_id"},\
-        "classified_code": "0000001234",\
-        "created_at": "2018-01-01 00:00:00",\
-        "updated_at": "2018-01-01 00:00:00"\
-    }
+    >>> attrs = collections.OrderedDict([\
+        ("id", 21000010000),\
+        ("job_run_id", {"raw": "$build_id"}),\
+        ("classified_code", "0000001234"),\
+        ("created_at", "2018-01-01 00:00:00"),\
+        ("updated_at", "2018-01-01 00:00:00")\
+    ])
     >>> formatted_single_record_lines(attrs, 0)[0]
     '21000010000,           -- id'
     >>> formatted_single_record_lines(attrs, 0)[1]
@@ -452,6 +464,7 @@ def formatted_single_record_lines(attrs, indent):
 
     >>> formatted_single_record_lines(attrs, 2)[0]
     '  21000010000,           -- id'
+
     """
 
     with_value_str = []
@@ -700,7 +713,7 @@ def parse_facture_json_line(line, filename, linenum):
 
     m = re.match(r'.*facture_json: (.*)', line)
     if m:
-        json_text = m[1]
+        json_text = m.group(1)
         result = None
         try:
             result = json.loads(json_text)

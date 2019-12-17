@@ -28,35 +28,39 @@
 # you can be confident that if you make changes here and the output of running
 # facture is what you expect, you're good... there are no additional side
 # effects you need to be aware of.
+#
+# One important note is if you're running Python <= 3.5 then the table 'attrs'
+# must be defined in an OrderedDict in order to retain attr write order!
 
+import collections
 
 def conf_tables():
     default_date = '2018-01-01 00:00:00'
     return {
         'products': {
-            'attrs': {
-                'id': {'seq': {'start': 21000000000}},
-                'classified_code': {'default': '0000001234'},
-                'created_at': {'default': default_date},
-                'updated_at': {'default': default_date}
-            }
+            'attrs': collections.OrderedDict([
+                ('id', {'seq': {'start': 21000000000}}),
+                ('classified_code', {'default': '0000001234'}),
+                ('created_at', {'default': default_date}),
+                ('updated_at', {'default': default_date})
+            ])
         },
         'retailer_products': {
-            'attrs': {
-                'id': {'seq': {'start': 22000000000}},
-                'product_id': {},
-                'retailer_id': {},
-                'created_at': {'default': default_date},
-                'updated_at': {'default': default_date}
-            }
+            'attrs': collections.OrderedDict([
+                ('id', {'seq': {'start': 22000000000}}),
+                ('product_id', {}),
+                ('retailer_id', {}),
+                ('created_at', {'default': default_date}),
+                ('updated_at', {'default': default_date}),
+            ])
         },
         'warehouses': {
-            'attrs': {
-                'id': {'seq': {'start': 23000000000}},
-                'created_at': {'default': default_date},
-                'updated_at': {'default': default_date}
-            }
-        }
+            'attrs': collections.OrderedDict([
+                ('id', {'seq': {'start': 23000000000}}),
+                ('created_at', {'default': default_date}),
+                ('updated_at', {'default': default_date})
+            ])
+        },
     }
 
 
