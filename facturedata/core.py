@@ -3,11 +3,43 @@ import re
 import collections
 import json
 import sys
+from abc import ABCMeta, abstractmethod
 
 ordered_dict_version = (3, 6)
 HAS_DEFAULT_ORDERED_DICT = sys.version_info > ordered_dict_version
 
 #############################################################################
+
+
+class FactureRefObj(metaclass=ABCMeta):
+
+    @abstractmethod
+    def anchors(self):
+        """
+        Anchors returns a list of facture anchors associated with this ref object
+        :return: list[str]
+        """
+        pass
+
+    @abstractmethod
+    def bind(self, anchor, value):
+        """
+        Binds an evaluated value to an anchor
+        :param anchor: str, facture anchor
+        :param value: any, the resolved facture reference
+        :return: void
+        """
+        pass
+
+    @abstractmethod
+    def eval(self):
+        """
+        Evaluates the reference object, returning a complete value
+
+        This should be called once all anchors are bound in order to get the final resolved object
+        :return: any, resolved facture ref object value
+        """
+        pass
 
 
 class ConfError(Exception):
@@ -26,12 +58,11 @@ def normalize_structure_copy_raw(data):
 
     >>> d = [{'data': [['calls c', {'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}]]}]
     >>> result = normalize_structure_copy_raw(d)
-    >>> [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}, 'ref_strs': {}}}]}] == result
+    >>> [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}, 'ref_objs': {}}}]}] == result
     True
     """
 
     result = copy.deepcopy(data)
-
     for x in result:
         new_data = []
         for y in x['data']:
@@ -40,10 +71,9 @@ def normalize_structure_copy_raw(data):
             raw = {'tablestr': y[0]}
             raw.update({'attrs': y[1].get('attrs', {})})
             raw.update({'refs': y[1].get('refs', {})})
-            raw.update({'ref_strs': y[1].get('ref_strs', {})})
+            raw.update({'ref_objs': y[1].get('ref_objs', {})})
             new_data.append({'raw': raw})
         x['data'] = new_data
-
     return result
 
 
@@ -142,7 +172,7 @@ def enhance_with_generated_data(data, seq_for, config):
     data = enhance_with_generated_sequential_data(data, seq_for, config)
 
     data = enhance_with_referenced_foreign_ids(data)
-    data = enhance_with_reference_strings(data)
+    data = enhance_with_reference_objects(data)
 
     return data
 
@@ -242,32 +272,25 @@ def enhance_with_referenced_foreign_ids(data):
     return result
 
 
-def enhance_with_reference_strings(data):
+def enhance_with_reference_objects(data):
     """This enhances the data by updating strings with facture anchors
     """
     result = copy.deepcopy(data)
-    reg_anchor = re.compile(r'(?<=facture_anchor\{)[^}]+')
     for x in result:
         group_data = x['data']
         for y in group_data:
             if 'referenced' not in y:
                 y['referenced'] = {}
             raw = y['raw']
-            ref_strs = raw.get('ref_strs')
-
-            if ref_strs:
-                for k, v in ref_strs.items():
-                    anchors = re.findall(reg_anchor, v)
-                    replaced_anchors = set()
-                    for anchor in anchors:
-                        if anchor in replaced_anchors:
-                            continue
+            ref_objs = raw.get('ref_objs')
+            if ref_objs:
+                for k, v in ref_objs.items():
+                    for anchor in v.anchors():
                         value = point_to_alias(
-                            anchor.strip(), x['group'], group_data
+                            anchor, x['group'], group_data
                         )
-                        replaced_anchors.add(anchor)
-                        v = v.replace("facture_anchor{" + anchor + "}", str(value))
-                    y['referenced'][k] = v
+                        v.bind(anchor, value)
+                    y['referenced'][k] = v.eval()
     return result
 
 

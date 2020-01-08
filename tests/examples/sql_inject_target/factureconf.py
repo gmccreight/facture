@@ -33,6 +33,35 @@
 # must be defined in an OrderedDict in order to retain attr write order!
 
 import collections
+import re
+
+
+class StringRefObj:
+
+    ANCHOR_FORMAT = "facture_anchor{{{}}}"
+
+    def __init__(self, string):
+        self._anchors = self._regex_anchors(string)
+        self.anchor_values = {}
+        self.raw_string = string
+
+    @staticmethod
+    def _regex_anchors(string):
+        reg_anchor = re.compile(r'(?<=facture_anchor\{)[^}]+')
+        return re.findall(reg_anchor, string)
+
+    def anchors(self):
+        return list(set(self._anchors))
+
+    def bind(self, anchor, value):
+        self.anchor_values[anchor] = value
+
+    def eval(self):
+        result = self.raw_string
+        for anchor in self.anchors():
+            result = result.replace(StringRefObj.ANCHOR_FORMAT.format(anchor), str(self.anchor_values[anchor]))
+        return result
+
 
 def conf_tables():
     return {
@@ -80,8 +109,9 @@ def conf_data():
                     'first_name': 'Tim',
                     'last_name': 'Robbins'
                 }}],
-                ['films f', {'attrs': {'year': '1994'},
-                             'ref_strs': {'name': 'Shawshank Redemption facture_anchor{.a_mf.id}'}}
+                ['films f', {
+                     'attrs': {'year': '1994'},
+                     'ref_objs': {'name': StringRefObj('Shawshank Redemption facture_anchor{.a_mf.id}')}}
                  ],
                 ['roles r1', {'refs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
                 ['roles r1', {'refs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
