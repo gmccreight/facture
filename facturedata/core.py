@@ -273,7 +273,7 @@ def enhance_with_referenced_foreign_ids(data):
 
 
 def enhance_with_reference_objects(data):
-    """This enhances the data by updating strings with facture anchors
+    """This enhances the data by updating reference objects with facture anchors
     """
     result = copy.deepcopy(data)
     for x in result:
