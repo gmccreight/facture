@@ -80,7 +80,9 @@ def conf_data():
                     'first_name': 'Tim',
                     'last_name': 'Robbins'
                 }}],
-                ['films f', {'attrs': {'name': 'Shawshank Redemption', 'year': '1994'}}],
+                ['films f', {'attrs': {'year': '1994'},
+                             'ref_strs': {'name': 'Shawshank Redemption facture_anchor{.a_mf.id}'}}
+                 ],
                 ['roles r1', {'refs': {'actor_id': '.a_mf.id', 'film_id': '.f.id'}}],
                 ['roles r1', {'refs': {'actor_id': '.a_tr.id', 'film_id': '.f.id'}}]
             ]

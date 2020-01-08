@@ -26,7 +26,7 @@ def normalize_structure_copy_raw(data):
 
     >>> d = [{'data': [['calls c', {'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}]]}]
     >>> result = normalize_structure_copy_raw(d)
-    >>> [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}}}]}] == result
+    >>> [{'data': [{'raw': {'tablestr': 'calls c', 'attrs': {'f': 'b'}, 'refs': {'f_id': '.f.id'}, 'ref_strs': {}}}]}] == result
     True
     """
 
@@ -40,6 +40,7 @@ def normalize_structure_copy_raw(data):
             raw = {'tablestr': y[0]}
             raw.update({'attrs': y[1].get('attrs', {})})
             raw.update({'refs': y[1].get('refs', {})})
+            raw.update({'ref_strs': y[1].get('ref_strs', {})})
             new_data.append({'raw': raw})
         x['data'] = new_data
 
@@ -141,6 +142,7 @@ def enhance_with_generated_data(data, seq_for, config):
     data = enhance_with_generated_sequential_data(data, seq_for, config)
 
     data = enhance_with_referenced_foreign_ids(data)
+    data = enhance_with_reference_strings(data)
 
     return data
 
@@ -237,6 +239,35 @@ def enhance_with_referenced_foreign_ids(data):
                         )
                     y['referenced'][k] = v
 
+    return result
+
+
+def enhance_with_reference_strings(data):
+    """This enhances the data by updating strings with facture anchors
+    """
+    result = copy.deepcopy(data)
+    reg_anchor = re.compile(r'(?<=facture_anchor\{)[^}]+')
+    for x in result:
+        group_data = x['data']
+        for y in group_data:
+            if 'referenced' not in y:
+                y['referenced'] = {}
+            raw = y['raw']
+            ref_strs = raw.get('ref_strs')
+
+            if ref_strs:
+                for k, v in ref_strs.items():
+                    anchors = re.findall(reg_anchor, v)
+                    replaced_anchors = set()
+                    for anchor in anchors:
+                        if anchor in replaced_anchors:
+                            continue
+                        value = point_to_alias(
+                            anchor.strip(), x['group'], group_data
+                        )
+                        replaced_anchors.add(anchor)
+                        v = v.replace("facture_anchor{" + anchor + "}", str(value))
+                    y['referenced'][k] = v
     return result
 
 
@@ -343,8 +374,8 @@ def careful_merge_dicts(d1, d2):
     d2 = copy.deepcopy(d2)
     if any(d1[k] != d2[k] for k in d1.keys() & d2):
         raise ConfError(
-            'There were overlapping keys in merging dictionaries: {}, {}'
-        ).format(d1, d2)
+            'There were overlapping keys in merging dictionaries: {}, {}'.format(d1, d2)
+        )
     else:
         d1.update(d2)
         return d1
