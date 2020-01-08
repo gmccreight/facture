@@ -3,7 +3,7 @@ import re
 import collections
 import json
 import sys
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
 ordered_dict_version = (3, 6)
 HAS_DEFAULT_ORDERED_DICT = sys.version_info > ordered_dict_version
@@ -11,7 +11,7 @@ HAS_DEFAULT_ORDERED_DICT = sys.version_info > ordered_dict_version
 #############################################################################
 
 
-class FactureRefObj(metaclass=ABCMeta):
+class FactureRefObj:
 
     @abstractmethod
     def anchors(self):

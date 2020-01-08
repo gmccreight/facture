@@ -35,9 +35,9 @@ values
 
 -- facture_group_shawshank_redemption
 (
-  200,                        -- id
-  'Shawshank Redemption 110', -- name
-  '1994'                      -- year
+  200,                    -- id
+  'Shawshank Redemption', -- name
+  '1994'                  -- year
 )
 
 -- facture_json: {"target_name": "films", "position": "end"}
