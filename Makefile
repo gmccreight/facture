@@ -14,6 +14,12 @@ test: clean-test-output
 	./facturedata/__main__.py --conf-dir="tests/examples/sql_inject_target"
 	diff tests/examples/sql_inject_target/expected_result.sql test_output/sql_inject_target/result.sql && echo OK
 
+	cp tests/examples/advanced_functionality/original.sql test_output/sql_inject_target/result.sql
+	./facturedata/__main__.py --conf-dir="tests/examples/advanced_functionality" --skip-targets --output-type=json > test_output/sql_inject_target/debug_intermediate.json
+	./facturedata/__main__.py --conf-dir="tests/examples/advanced_functionality"
+	diff tests/examples/advanced_functionality/expected_result.sql test_output/sql_inject_target/result.sql && echo OK
+
+
 clean-test-output:
 	rm -rf test_output
 	mkdir -p test_output/json_output
