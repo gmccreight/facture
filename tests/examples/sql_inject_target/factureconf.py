@@ -92,6 +92,7 @@ def conf_targets():
     return [
         {
             'name': 'actors',
+            'format': 'select_unionall',
             'type': 'section_in_file',
             'filename': 'test_output/sql_inject_target/result.sql',
             'section_name': 'actors'
