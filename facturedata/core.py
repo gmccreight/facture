@@ -488,10 +488,8 @@ def add_sql_output(data, conf_tables, indent=2):
 
 def sql_output_lines_for(group, attrs, indent=2):
     lines = []
-    lines.append("-- {}".format(group))
-    lines.append("(")
+    lines.append((' ' * indent) + "-- {}".format(group))
     lines.extend(formatted_single_record_lines(attrs, indent))
-    lines.append(")")
     return '\n'.join(lines)
 
 
@@ -557,11 +555,48 @@ def formatted_single_record_lines(attrs, indent):
 
 #############################################################################
 
+"""
+When building SQL output the values clause can be either two of the following. 
+
+** DEFAULT: The tradition VALUES clause.
+values
+(
+  -- facture_group_shawshank_redemption
+  1100, -- id
+  110,  -- actor_id
+  200   -- film_id
+),
+
+** SELECT_UNIONALL: Special case for some providers such as snowflake
+select
+  110,       -- id
+  $build_id, -- job_run_id
+  'Morgan',  -- first_name
+  'Freeman'  -- last_name
+union all
+"""
+SQL_VALUES_CONF = {
+    'default': {
+        'prefix': 'values\n',
+        'join': ',\n\n',
+        'value_format': '(\n{}\n)',
+        'suffix': '\n',
+    },
+    'select_unionall': {
+        'prefix': '',
+        'join': '\nunion all\n\n',
+        'value_format': 'select\n{}\n',
+        'suffix': '',
+    },
+}
 
 def write_to_actual_target_files(targets):
     targets = targets_sorted_by_start_descending(targets)
     for target in targets:
-        payload = "\n" + ",\n\n".join(target['output_values']) + "\n\n"
+        sql_format = SQL_VALUES_CONF[target.get('format', 'default')]
+        payload = sql_format['prefix']
+        payload += sql_format['join'].join([sql_format['value_format'].format(x) for x in target['output_values']])
+        payload += sql_format['suffix']
         filename = target['filename']
         start = target['positional_data_from_file']['start_line']
         end = target['positional_data_from_file']['end_line']
